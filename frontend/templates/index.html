@@ -6,8 +6,9 @@
         <div class="card" style="width: 18rem; margin-bottom: 50px;">
             <div class="card-header">
                 <h3>{{ app['name'] }}</h3>
+                <h5>{{ app['internal_url'] }}</h5>
+                <p>{{ app['alive'] }}</p>
             </div>
-            <a href="{{app['internal_url']}}" target="_blank">Open</a>
             <ul class="list-group list-group-flush">
                 {% for tag in tags %}
                     <li class="list-group-item">{{ tag['tag'] }}</li>

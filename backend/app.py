@@ -18,40 +18,30 @@ def get_db_connection():
 # @app.route('/home')
 def index():
     connect = get_db_connection()
-    tags = connect.execute('SELECT t.tag, a.name, a.description, a.internal_url, a.external_url, a.icon, a.alive FROM tags t JOIN app_tags at ON t.id = at.tag_id JOIN apps a ON at.app_id = a.id ORDER BY a.name').fetchall()
-    apps = {}
-    for k, g in groupby(tags, lambda x: x):
-        apps[k] = list(g)
+    apps = connect.execute('SELECT a.id, a.name, a.internal_url, a.external_url, a.description, a.icon, a.alive\
+                            FROM apps a').fetchall()
+
+
+    newapp = {}
+    for app in apps:
+        print(str(app['id']) + str(app['name']))
+
+        tags = connect.execute('SELECT a.id, a.tag\
+                            FROM tags a \
+                            JOIN app_tags at\
+                            ON a.id = at.tag_id \
+                            WHERE at.app_id = ?', (app['id'],)).fetchall()
+        newapp[app] = tags
+        for tag in tags:
+            print ("tag: " + str(tag['tag']))
     
 
     connect.close()
-    return render_template('index.html', apps=apps) 
+    return render_template('index.html', apps=newapp) 
+    # return render_template('index.html')
 
 
-@app.route('/add', methods=['GET', 'POST'])
-def add():
-    if request.method == 'POST':
-        connect = sqlite3.connect('data.db')
-        name = request.form['name']
-        internal_url = request.form['internal_url']
-        external_url = request.form['external_url']
-        icon = request.form['icon']
-        description = request.form['description']
-        alive = False
-        connect.execute(
-            'INSERT INTO data (name, link, icon, description, alive) VALUES (?,?,?,?,?)', (name, link, icon, description, alive))
-        connect.commit()
-        return render_template('index.html')
-    else:
-        return render_template('add.html')
 
-
-@app.route('/dash')
-def apps():
-    connect = sqlite3.connect('data.db')
-    cursor = connect.execute('SELECT * FROM data')
-    data = cursor.fetchall()
-    return render_template('dash.html', data=data)
 
 
 if __name__ == '__main__':
