@@ -8,8 +8,8 @@ with open('./backend/schema.sql') as f:
 
 cur = connection.cursor()
 
-cur.execute("INSERT INTO apps (name, internal_url) VALUES (?, ?)", ('Nextcloud','http://localhost;237'))
-cur.execute("INSERT INTO apps (name, internal_url) VALUES (?, ?)", ('Dashy','http://192.168.200.3'))
+cur.execute("INSERT INTO apps (name, internal_url) VALUES (?, ?)", ('Nextcloud','http://192.168.200.44:9443'))
+cur.execute("INSERT INTO apps (name, internal_url) VALUES (?, ?)", ('Dashy','http://192.168.200.19'))
 
 cur.execute("INSERT INTO tags (tag) VALUES (?)", ('ToolsTag',))
 cur.execute("INSERT INTO tags (tag) VALUES (?)", ('UtilsTag',))

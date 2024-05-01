@@ -24,6 +24,15 @@ def index():
 
     newapp = {}
     for app in apps:
+        try:
+            response = request.get(app['internal_url'])
+            if response.ok:
+                app['alive'] = 1
+            else:
+                app['alive'] = 0
+        except Exception as e:
+            print("Failure: {e}.")
+
         print(str(app['id']) + str(app['name']))
 
         tags = connect.execute('SELECT a.id, a.tag\
