@@ -5,8 +5,9 @@
     {% for app, tags in apps.items() %}
         <div class="card" style="width: 18rem; margin-bottom: 50px;">
             <div class="card-header">
-                <h3>{{ app }}</h3>
+                <h3>{{ app['name'] }}</h3>
             </div>
+            <a href="{{app['internal_url']}}" target="_blank">Open</a>
             <ul class="list-group list-group-flush">
                 {% for tag in tags %}
                     <li class="list-group-item">{{ tag['tag'] }}</li>
