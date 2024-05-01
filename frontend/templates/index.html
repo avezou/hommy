@@ -2,7 +2,7 @@
 <!DOCTYPE html> 
 <html> 
     <head> 
-        <title>Flask and SQLite </title> 
+        <title>Hommy Dashboard </title> 
     </head> 
     <style> 
         table, th, td { 
@@ -12,17 +12,17 @@
     <body> 
         <table style="width:100%"> 
             <tr> 
-              <th>Name</th> 
+              <th>App</th> 
               <th>Link</th> 
               <th>Icon</th> 
               <th>Desciption</th> 
             </tr> 
             {%for app in apps%} 
                <tr> 
-                 <td>{{app}}</td> 
-                 <td>{{app[1]}}</td> 
-                 <td>{{app[2]}}</td> 
-                 <td>{{app[3]}}</td> 
+                 <td>{{app[0]}}</td> 
+                 <td>{{app.internal_url}}</td> 
+                 <td>{{app[icon]}}</td> 
+                 <td>{{app[description]}}</td> 
                 </tr> 
             {%endfor%} 
           </table>           

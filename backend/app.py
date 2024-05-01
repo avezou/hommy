@@ -18,7 +18,7 @@ def get_db_connection():
 # @app.route('/home')
 def index():
     connect = get_db_connection()
-    tags = connect.execute('SELECT t.name, a.name, a.description, a.internal_url, a.external_url, a.icon, a.alive FROM tags t INNER JOIN apps a ON t.app_id = a.id').fetchall()
+    tags = connect.execute('SELECT t.tag, a.name, a.description, a.internal_url, a.external_url, a.icon, a.alive FROM tags t JOIN apps a ON t.app_id = a.id ORDER BY a.name').fetchall()
 
     apps = {}
     for k, g in groupby(tags, lambda x: x['name']):

@@ -14,7 +14,7 @@ CREATE TABLE apps (
 
 CREATE TABLE tags (
     id INTEGER PRIMARY KEY AUTOINCREMENT, 
-    name text,
+    tag text,
     app_id INTEGER DEFAULT 0, 
     FOREIGN KEY (app_id) REFERENCES apps(id)
 );
