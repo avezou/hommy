@@ -1,0 +1,15 @@
+.dot {
+    height: 25px;
+    width: 25px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+}
+.gradient-green {
+    background-image: linear-gradient(to bottom, #7cdd55, #2EB62C);
+    border-radius: 10px;
+}
+.gradient-red {
+    background-image: linear-gradient(to bottom, #f52424, #590b04);
+    border-radius: 10px;
+}

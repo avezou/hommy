@@ -7,7 +7,7 @@ from sched import scheduler
 from apscheduler.schedulers.background import BackgroundScheduler
 
 
-app = Flask(__name__, template_folder='../frontend/templates')
+app = Flask(__name__, template_folder='templates')
 app.config['SECRET_KEY'] = 'this should be a secret random string'
 
 
@@ -19,12 +19,13 @@ def update_alive():
     for myapp in apps:
         try:
             response = requests.get(myapp['internal_url'])
+            print("status code: " + str(response.status_code))
             if response.status_code == 200:
                 connect.execute('UPDATE apps SET alive = 1 WHERE id =?', (myapp['id'],))
-                print('App: '+ myapp['name'] +'is alive')
+                print('App: ' + myapp['name'] + ' at ' + myapp['internal_url'] + ' is alive')
             else:
                 connect.execute('UPDATE apps SET alive = 0 WHERE id =?', (myapp['id'],))
-                print('App: '+ myapp['name'] +'is dead')
+                print('App: '+ myapp['name'] +' is dead')
         except: 
             print('App'+ myapp['name'] +'is dead')
             connect.execute('UPDATE apps SET alive = 0 WHERE id =?', (myapp['id'],))
@@ -41,7 +42,7 @@ atexit.register(lambda: scheduler.shutdown())
 
 
 def get_db_connection():
-    connect = sqlite3.connect('./backend/database.db')
+    connect = sqlite3.connect('./database.db')
     connect.row_factory = sqlite3.Row
     return connect
 
@@ -56,6 +57,7 @@ def index():
 
     newapp = {}
     for myapp in apps:
+        searchApps = myapp['name'].lower()
         try:
             response = requests.get(myapp['internal_url'])
             if response.status_code == 200:
@@ -72,10 +74,13 @@ def index():
                             ON a.id = at.tag_id \
                             WHERE at.app_id = ?', (myapp['id'],)).fetchall()
         newapp[myapp] = tags
+
+        allTags = connect.execute('SELECT a.id, a.tag\
+                            FROM tags a').fetchall()
     
     connect.commit()
     connect.close()
-    return render_template('index.html', apps=newapp) 
+    return render_template('index.html', apps=newapp, tags=allTags, categories=allTags, appNames=searchApps) 
 
 
 @app.route('/edit', methods=['GET', 'POST'])

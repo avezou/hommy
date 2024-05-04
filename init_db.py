@@ -1,15 +1,15 @@
 import sqlite3
 
-connection = sqlite3.connect('./backend/database.db')
+connection = sqlite3.connect('database.db')
 
 
-with open('./backend/schema.sql') as f:
+with open('schema.sql') as f:
     connection.executescript(f.read())
 
 cur = connection.cursor()
 
 cur.execute("INSERT INTO apps (name, internal_url) VALUES (?, ?)", ('Nextcloud','https://example.com'))
-cur.execute("INSERT INTO apps (name, internal_url) VALUES (?, ?)", ('Dashy','https://yt.sphl.cloud'))
+cur.execute("INSERT INTO apps (name, internal_url) VALUES (?, ?)", ('Dashy','https://yt3.sphl.cloud'))
 
 cur.execute("INSERT INTO tags (tag) VALUES (?)", ('ToolsTag',))
 cur.execute("INSERT INTO tags (tag) VALUES (?)", ('UtilsTag',))
