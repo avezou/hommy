@@ -5,8 +5,9 @@
     <div class="wrapper">
       <span>Tag:</span>
       <select id='myTags'>
+        <option value="">Filter by tag</option>
         {% for tag in tags %}
-          <option value="{{ tag }}">{{ tag['tag'] }}</option>
+          <option value="{{ tag['tag'] }}">{{ tag['tag'] }}</option>
         {% endfor %}
       </select>
     
