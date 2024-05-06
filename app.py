@@ -51,7 +51,7 @@ def get_db_connection():
 # @app.route('/home')
 def index():
     connect = get_db_connection()
-    apps = connect.execute('SELECT a.id, a.name, a.internal_url, a.external_url, a.description, a.icon, a.alive\
+    apps = connect.execute('SELECT a.id, a.category, a.name, a.internal_url, a.external_url, a.description, a.icon, a.alive, a.extras\
                             FROM apps a').fetchall()
 
 
@@ -73,14 +73,22 @@ def index():
                             JOIN app_tags at\
                             ON a.id = at.tag_id \
                             WHERE at.app_id = ?', (myapp['id'],)).fetchall()
+        category = connect.execute('SELECT c.cat\
+                            FROM apps a\
+                            JOIN categories c\
+                            ON a.category = c.cat').fetchall()[0]
+        
         newapp[myapp] = tags
 
-        allTags = connect.execute('SELECT a.id, a.tag\
+        
+    allTags = connect.execute('SELECT a.id, a.tag\
                             FROM tags a').fetchall()
+    allCategories = connect.execute('SELECT c.cat\
+                            FROM categories c').fetchall()
     
     connect.commit()
     connect.close()
-    return render_template('index.html', apps=newapp, tags=allTags, categories=allTags, appNames=searchApps) 
+    return render_template('index.html', apps=newapp, tags=allTags, categories=allCategories, appNames=searchApps) 
 
 
 @app.route('/edit', methods=['GET', 'POST'])

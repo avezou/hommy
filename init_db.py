@@ -8,8 +8,13 @@ with open('schema.sql') as f:
 
 cur = connection.cursor()
 
-cur.execute("INSERT INTO apps (name, internal_url) VALUES (?, ?)", ('Nextcloud','https://example.com'))
-cur.execute("INSERT INTO apps (name, internal_url) VALUES (?, ?)", ('Dashy','https://yt3.sphl.cloud'))
+cur.execute("INSERT INTO categories (cat) VALUES (?)", ('Hypervisors',))
+cur.execute("INSERT INTO categories (cat) VALUES (?)", ('Servers',))
+cur.execute("INSERT INTO categories (cat) VALUES (?)", ('Business',))
+cur.execute("INSERT INTO categories (cat) VALUES (?)", ('Services',))
+
+cur.execute("INSERT INTO apps (name, category, internal_url) VALUES (?, ?, ?)", ('Nextcloud', 'Servers','https://example.com'))
+cur.execute("INSERT INTO apps (name, category, internal_url) VALUES (?, ?, ?)", ('Dashy', 'Business', 'https://yt3.sphl.cloud'))
 
 cur.execute("INSERT INTO tags (tag) VALUES (?)", ('ToolsTag',))
 cur.execute("INSERT INTO tags (tag) VALUES (?)", ('UtilsTag',))

@@ -13,3 +13,64 @@
     background-image: linear-gradient(to bottom, #f52424, #590b04);
     border-radius: 10px;
 }
+
+/* element.style {
+
+} */
+
+.h3, h3 {
+    font-size: 1.30rem;
+}
+
+h3 {
+    font-weight: 400;
+    line-height: 1;
+    margin-bottom: 1rem;
+    margin-top: 0;
+    display: block;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    unicode-bidi: isolate;
+}
+
+*, ::after, ::before {
+    box-sizing: border-box;
+}
+.card {
+    word-wrap: break-word;
+}
+
+body {
+    font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: #F5F7FA
+}
+html {
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+}
+.mantine-dhwiwm {
+    z-index: 100;
+    display: flex;
+    -webkit-box-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    align-items: center;
+    font-size: 0.75rem;
+    padding-left: 0px;
+    padding-right: 0px;
+    background-color: rgb(55, 178, 77);
+    color: rgb(255, 255, 255);
+    white-space: nowrap;
+    top: 0px;
+    right: 0px;
+    transform: translate(-120%, 200%);
+    position: absolute;
+    width: 1.2rem;
+    height: 1.2rem;
+    border-radius: 62.5rem;
+}
+.mantine-dhwiwm.dead {
+    background-color: rgb(197, 40, 19);
+}
