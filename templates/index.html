@@ -28,15 +28,15 @@
     <div class="col-xl-3 col-sm-6 col-12" id="myList">
       <div class="card">
         <div class="card-content p-2">
-          
-          <h4 class="card-content">{{ app['name'] }}
-          {% if app['alive'] == 1 %}
-          <span class="dot gradient-green alive-pulse"></span>
-          {% else %}
-          <span class="dot gradient-red"></span>
-          {% endif %}
-        </h4>
-          <p><a href="{{ app['internal_url'] }}" class="card-text" target="_blank">{{ app['internal_url'] }}</a></p>
+          <a href="{{ app['internal_url'] }}" class="card-text" target="_blank">
+            <h4 class="card-content">{{ app['name'] }}
+              {% if app['alive'] == 1 %}
+              <span class="dot gradient-green alive-pulse"></span>
+              {% else %}
+              <span class="dot gradient-red"></span>
+              {% endif %}
+            </h4>
+          </a>
           <p>{{ app['category'] }}</p>
             {% for tag in tags %}
                 <span class="badge badge-dark">{{ tag['tag'] }}</span>
