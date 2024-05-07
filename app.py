@@ -8,8 +8,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 
 
 app = Flask(__name__, template_folder='templates')
-app.config['SECRET_KEY'] = 'this should be a secret random string'
-
+app.config.from_pyfile('settings.py')
 
 
 def update_alive():
