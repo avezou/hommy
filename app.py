@@ -60,7 +60,7 @@ def get_db_connection():
 def index():
     connect = get_db_connection()
     apps = connect.execute('SELECT a.id, a.category, a.name, a.internal_url, a.external_url, a.description, a.icon, a.alive, a.extras\
-                            FROM apps a').fetchall()
+                            FROM apps a ORDER BY a.category').fetchall()
 
 
     newapp = {}
@@ -85,7 +85,7 @@ def index():
                             FROM tags a \
                             JOIN app_tags at\
                             ON a.id = at.tag_id \
-                            WHERE at.app_id = ?', (myapp['id'],)).fetchall()
+                            WHERE at.app_id = ? ORDER BY a.tag', (myapp['id'],)).fetchall()
         category = connect.execute('SELECT c.cat\
                             FROM apps a\
                             JOIN categories c\
@@ -95,9 +95,9 @@ def index():
 
         
     allTags = connect.execute('SELECT a.id, a.tag\
-                            FROM tags a').fetchall()
+                            FROM tags a ORDER BY a.tag').fetchall()
     allCategories = connect.execute('SELECT c.cat\
-                            FROM categories c').fetchall()
+                            FROM categories c ORDER BY c.cat').fetchall()
     
     connect.commit()
     connect.close()
