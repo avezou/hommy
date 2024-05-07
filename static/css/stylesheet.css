@@ -2,8 +2,18 @@
     height: 25px;
     width: 25px;
     background-color: #bbb;
+    /* margin-left: 2em; */
+    margin-right: 1em;
+    display: flex;
+    justify-content: flex-end;
+    white-space: nowrap;
+    -webkit-box-pack: center;
+    -webkit-box-align: center;
     border-radius: 50%;
     display: inline-block;
+    width: 1.2rem;
+    height: 1.2rem;
+    border-radius: 20.5rem;
 }
 .gradient-green {
     background-image: linear-gradient(to bottom, #7cdd55, #2EB62C);
@@ -50,27 +60,24 @@ html {
     -webkit-text-size-adjust: 100%;
     -webkit-tap-highlight-color: transparent;
 }
-.mantine-dhwiwm {
-    z-index: 100;
-    display: flex;
-    -webkit-box-pack: center;
-    justify-content: center;
-    -webkit-box-align: center;
-    align-items: center;
-    font-size: 0.75rem;
-    padding-left: 0px;
-    padding-right: 0px;
-    background-color: rgb(55, 178, 77);
-    color: rgb(255, 255, 255);
-    white-space: nowrap;
-    top: 0px;
-    right: 0px;
-    transform: translate(20%, -550%);
-    position: absolute;
-    width: 1.2rem;
-    height: 1.2rem;
-    border-radius: 20.5rem;
+
+.alive-pulse {
+    animation: 3s infinite bgcolorchange;
 }
-.mantine-dhwiwm.dead {
-    background-color: rgb(197, 40, 19);
+@keyframes bgcolorchange {
+0% {
+    color: rgb(122, 237, 120);
 }
+50% {
+    background: rgb(133, 237, 120);
+}
+100% {
+    background: rgb(83, 195, 49);
+}
+}
+@-webkit-keyframes bgcolorchange {
+    0%   {background: rgb(122, 237, 120);}
+    75%  {background: rgb(133, 237, 120);}
+    100% {background: rgb(83, 195, 49);}
+}
+
