@@ -13,18 +13,17 @@ CREATE TABLE apps (
     icon text DEFAULT "", 
     alive bool DEFAULT 0,
     extras text,
-    tag1 text,
-    tag2 text,
-    tag3 text,
     FOREIGN KEY(category) REFERENCES categories(cat)
-    
-    
 );
+
+CREATE UNIQUE INDEX apps_idx ON apps(name);
 
 CREATE TABLE tags (
     id INTEGER PRIMARY KEY AUTOINCREMENT, 
     tag text
 );
+
+CREATE UNIQUE INDEX tag_idx ON tags(tag);
 
 CREATE TABLE categories (
     cat text PRIMARY KEY

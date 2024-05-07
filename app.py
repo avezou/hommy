@@ -107,21 +107,6 @@ def index():
 @app.route('/edit', methods=['GET', 'POST'])
 def edit():
     form = AppForm()
-    # if request.method == 'POST':
-    #     connect = get_db_connection()
-    #     connect.execute('UPDATE apps SET name =?, internal_url =?, external_url =?, description =?, icon =? WHERE id =?', (request.form['name'], request.form['internal_url'], request.form['external_url'], request.form['description'], request.form['icon'], request.form['id']))
-    #     connect.commit()
-    #     connect.close()
-    #     return redirect(url_for('index'))
-    # else:
-    #     connect = get_db_connection()
-    #     app = connect.execute('SELECT * FROM apps WHERE id =?', (request.args.get('id'),)).fetchone()
-    #     tags = connect.execute('SELECT a.id, a.tag\
-    #                         FROM tags a \
-    #                         JOIN app_tags at\
-    #                         ON a.id = at.tag_id \
-    #                         WHERE at.app_id = ?', (app['id'],)).fetchall()
-    #     connect.close()
     if form.validate_on_submit():
         connect = get_db_connection()
         appName = form.name.data
@@ -148,9 +133,25 @@ def edit():
             connect.execute('INSERT OR IGNORE INTO tags (tag) VALUES (?)', (tag3,))
         connect.commit()
 
-        connect.execute('INSERT INTO apps (name, category, description, internal_url, external_url, icon, extras, tag1, tag2, tag3)\
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (appName, category, description, internal_url, external_url, icon_path, extras, tag1, tag2, tag3))
+        connect.execute('INSERT OR IGNORE INTO apps (name, category, description, internal_url, external_url, icon, extras)\
+            VALUES (?, ?, ?, ?, ?, ?, ?)', (appName, category, description, internal_url, external_url, icon_path, extras))
 
+        myapp = connect.execute('SELECT id,name FROM apps where name=?', (appName,)).fetchall()[0]
+
+        if myapp['id'] > -1:
+            if str(tag1).isalpha:
+                t = connect.execute('SELECT id, tag FROM tags WHERE tag=?', (tag1,)).fetchall()[0]
+                print ("print t: " + str(t['tag']))
+                connect.execute('INSERT INTO app_tags(app_id, tag_id) VALUES(?, ?)', (myapp['id'], t['id']))
+            if str(tag2).isalpha:
+                t = connect.execute('SELECT id, tag FROM tags WHERE tag=?', (tag2,)).fetchall()[0]
+                print ("print t: " + str(t['tag']))
+                connect.execute('INSERT INTO app_tags(app_id, tag_id) VALUES(?, ?)', (myapp['id'], t['id']))
+            if str(tag3).isalpha:
+                t = connect.execute('SELECT id, tag FROM tags WHERE tag=?', (tag3,)).fetchall()[0]
+                print ("print t: " + str(t['tag']))
+                connect.execute('INSERT INTO app_tags(app_id, tag_id) VALUES(?, ?)', (myapp['id'], t['id']))
+            
         connect.commit()
         connect.close()
 
