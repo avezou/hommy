@@ -1,14 +1,23 @@
 import sqlite3
 import requests
 import atexit
+import os
+import urllib.request
 from itertools import groupby
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 from sched import scheduler
 from apscheduler.schedulers.background import BackgroundScheduler
+from PIL import Image
+from flask_bootstrap import Bootstrap
+from config import Config
+from forms import AppForm
+from werkzeug.utils import secure_filename
 
 
 app = Flask(__name__, template_folder='templates')
-app.config.from_pyfile('settings.py')
+app.config.from_object(Config)
+
+bootstrap = Bootstrap(app)
 
 
 def update_alive():
@@ -56,6 +65,11 @@ def index():
 
     newapp = {}
     for myapp in apps:
+        # imagename = myapp['name'] + ".jpg"
+        # print("icon url: " + str(myapp['icon']))
+        # urllib.request.urlretrieve(myapp['icon'], imagename)
+        # image = Image.open(imagename)
+        # print(image.format)
         searchApps = myapp['name'].lower()
         try:
             response = requests.get(myapp['internal_url'])
@@ -92,22 +106,58 @@ def index():
 
 @app.route('/edit', methods=['GET', 'POST'])
 def edit():
-    if request.method == 'POST':
+    form = AppForm()
+    # if request.method == 'POST':
+    #     connect = get_db_connection()
+    #     connect.execute('UPDATE apps SET name =?, internal_url =?, external_url =?, description =?, icon =? WHERE id =?', (request.form['name'], request.form['internal_url'], request.form['external_url'], request.form['description'], request.form['icon'], request.form['id']))
+    #     connect.commit()
+    #     connect.close()
+    #     return redirect(url_for('index'))
+    # else:
+    #     connect = get_db_connection()
+    #     app = connect.execute('SELECT * FROM apps WHERE id =?', (request.args.get('id'),)).fetchone()
+    #     tags = connect.execute('SELECT a.id, a.tag\
+    #                         FROM tags a \
+    #                         JOIN app_tags at\
+    #                         ON a.id = at.tag_id \
+    #                         WHERE at.app_id = ?', (app['id'],)).fetchall()
+    #     connect.close()
+    if form.validate_on_submit():
         connect = get_db_connection()
-        connect.execute('UPDATE apps SET name =?, internal_url =?, external_url =?, description =?, icon =? WHERE id =?', (request.form['name'], request.form['internal_url'], request.form['external_url'], request.form['description'], request.form['icon'], request.form['id']))
+        appName = form.name.data
+        category = form.category.data
+        description = form.description.data
+        internal_url = form.internal_url.data
+        external_url = form.external_url.data
+        upload_file = form.icon.data
+        filename = secure_filename(upload_file.filename)
+        icon_path = os.path.join(app.config['UPLOAD_PATH'], filename)
+        upload_file.save(icon_path)
+        tag1 = form.tag1.data
+        tag2 = form.tag2.data
+        tag3 = form.tag3.data
+        extras = form.extras.data
+
+        connect.execute('INSERT OR IGNORE INTO categories(cat) VALUES(?)', (category,))
+
+        if str(tag1).isalpha:
+            connect.execute('INSERT OR IGNORE INTO tags (tag) VALUES (?)', (tag1,))
+        if str(tag2).isalpha:
+            connect.execute('INSERT OR IGNORE INTO tags (tag) VALUES (?)', (tag2,))
+        if str(tag3).isalpha:
+            connect.execute('INSERT OR IGNORE INTO tags (tag) VALUES (?)', (tag3,))
+        connect.commit()
+
+        connect.execute('INSERT INTO apps (name, category, description, internal_url, external_url, icon, extras, tag1, tag2, tag3)\
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (appName, category, description, internal_url, external_url, icon_path, extras, tag1, tag2, tag3))
+
         connect.commit()
         connect.close()
+
         return redirect(url_for('index'))
-    else:
-        connect = get_db_connection()
-        app = connect.execute('SELECT * FROM apps WHERE id =?', (request.args.get('id'),)).fetchone()
-        tags = connect.execute('SELECT a.id, a.tag\
-                            FROM tags a \
-                            JOIN app_tags at\
-                            ON a.id = at.tag_id \
-                            WHERE at.app_id = ?', (app['id'],)).fetchall()
-        connect.close()
-        return render_template('edit.html', app=app, tags=tags)
+        
+
+    return render_template('edit.html', form=form, title='App Form')
 
 
 if __name__ == '__main__':

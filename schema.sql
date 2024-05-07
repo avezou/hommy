@@ -10,10 +10,14 @@ CREATE TABLE apps (
     description text DEFAULT "", 
     internal_url url, 
     external_url url DEFAULT "", 
-    icon url DEFAULT "", 
+    icon text DEFAULT "", 
     alive bool DEFAULT 0,
     extras text,
+    tag1 text,
+    tag2 text,
+    tag3 text,
     FOREIGN KEY(category) REFERENCES categories(cat)
+    
     
 );
 
