@@ -65,11 +65,11 @@ html {
     white-space: nowrap;
     top: 0px;
     right: 0px;
-    transform: translate(-120%, 200%);
+    transform: translate(20%, -550%);
     position: absolute;
     width: 1.2rem;
     height: 1.2rem;
-    border-radius: 62.5rem;
+    border-radius: 20.5rem;
 }
 .mantine-dhwiwm.dead {
     background-color: rgb(197, 40, 19);

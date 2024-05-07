@@ -1,8 +1,8 @@
 
 function myToggle(e, b) {
     if (b) {
-        e.show(1000);
-        e.parent().show(1000);
+        e.show(2000);
+        e.parent().show(2000);
     } else {
         e.hide("slow");
         e.parent().hide("slow");

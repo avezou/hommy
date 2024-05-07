@@ -13,8 +13,8 @@ cur.execute("INSERT INTO categories (cat) VALUES (?)", ('Servers',))
 cur.execute("INSERT INTO categories (cat) VALUES (?)", ('Business',))
 cur.execute("INSERT INTO categories (cat) VALUES (?)", ('Services',))
 
-cur.execute("INSERT INTO apps (name, category, internal_url) VALUES (?, ?, ?)", ('Nextcloud', 'Servers','https://example.com'))
-cur.execute("INSERT INTO apps (name, category, internal_url) VALUES (?, ?, ?)", ('Dashy', 'Business', 'https://yt3.sphl.cloud'))
+cur.execute("INSERT INTO apps (name, category, internal_url, icon) VALUES (?, ?, ?, ?)", ('Nextcloud', 'Servers','https://example.com', 'https://imgs.sphl.cloud/xbkpyk.png'))
+cur.execute("INSERT INTO apps (name, category, internal_url, icon) VALUES (?, ?, ?, ?)", ('Dashy', 'Business', 'https://yt3.sphl.cloud', 'https://imgs.sphl.cloud/gtxrs4.png'))
 
 cur.execute("INSERT INTO tags (tag) VALUES (?)", ('ToolsTag',))
 cur.execute("INSERT INTO tags (tag) VALUES (?)", ('UtilsTag',))
