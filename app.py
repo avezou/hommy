@@ -54,10 +54,7 @@ def get_db_connection():
     connect.row_factory = sqlite3.Row
     return connect
 
-
-@app.route('/')
-# @app.route('/home')
-def index():
+def get_apps():
     connect = get_db_connection()
     apps = connect.execute('SELECT a.id, a.category, a.name, a.internal_url, a.external_url, a.description, a.icon, a.alive, a.extras\
                             FROM apps a ORDER BY a.category').fetchall()
@@ -101,11 +98,66 @@ def index():
     
     connect.commit()
     connect.close()
-    return render_template('index.html', apps=newapp, tags=allTags, categories=allCategories, appNames=searchApps) 
+
+    return newapp, allTags, allCategories, searchApps
 
 
-@app.route('/edit', methods=['GET', 'POST'])
-def edit():
+@app.route('/')
+def index():
+    
+    res = get_apps()
+
+    return render_template('index.html', apps=res[0], tags=res[1], categories=res[2], appNames=res[3]) 
+
+@app.route('/list', methods=['GET', 'POST'])
+def list():
+    res =  get_apps()
+    return render_template('list.html', apps=res[0])
+
+@app.route('/edit/<int:id>', methods=['GET', 'POST'])
+def edit(id):
+    form = AppForm()
+    if form.validate_on_submit():
+        connect = get_db_connection()
+        appName = form.name.data
+        category = form.category.data
+        description = form.description.data
+        internal_url = form.internal_url.data
+        external_url = form.external_url.data
+        upload_file = form.icon.data
+        filename = secure_filename(upload_file.filename)
+        icon_path = os.path.join(app.config['UPLOAD_PATH'], filename)
+        upload_file.save(icon_path)
+        tag1 = form.tag1.data
+        tag2 = form.tag2.data
+        tag3 = form.tag3.data
+        extras = form.extras.data
+
+        connect.execute('INSERT OR IGNORE INTO categories(cat) VALUES(?)', (category,))
+
+        if str(tag1).isalpha:
+            connect.execute('INSERT OR IGNORE INTO tags (tag) VALUES (?)', (tag1,))
+        if str(tag2).isalpha:
+            connect.execute('INSERT OR IGNORE INTO tags (tag) VALUES (?)', (tag2,))
+        if str(tag3).isalpha:
+            connect.execute('INSERT OR IGNORE INTO tags (tag) VALUES (?)', (tag3,))
+        connect.commit()
+
+        connect.execute('UPDATE apps SET name=?, category=?, description=?, internal_url=?, external_url=?, icon=?, extras=?\
+            WHERE id=?', (appName, category, description, internal_url, external_url, icon_path, extras, id))
+
+        connect.commit()
+        connect.close()
+
+        return redirect(url_for('list'))
+
+
+    return render_template('edit.html', form=form)
+
+
+
+@app.route('/add', methods=['GET', 'POST'])
+def add():
     form = AppForm()
     if form.validate_on_submit():
         connect = get_db_connection()
@@ -158,7 +210,7 @@ def edit():
         return redirect(url_for('index'))
         
 
-    return render_template('edit.html', form=form, title='App Form')
+    return render_template('add.html', form=form, title='App Form')
 
 
 if __name__ == '__main__':
