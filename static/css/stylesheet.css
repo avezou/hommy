@@ -56,9 +56,9 @@ body {
     font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     background-image: url("../images/pexels-abdghat.jpg");
     background-repeat: no-repeat, repeat;
-    
+    margin: 0;    
+    padding: 0;
     /* opacity: 0.5; */
-    
 }
 body {
     --fbc-blue-60: #0060df;
