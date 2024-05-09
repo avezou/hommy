@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homelab Dashboard</title>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #services {
+            margin: 20px auto;
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .service {
+            padding: 10px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            width: calc(100% / 6 - 20px);
+            margin-right: 20px;
+        }
+        .service h3 {
+            margin-top: 0;
+        }
+        .service .status {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div id="services">
+    <div class="service" data-link="https://example.com/service1">
+        <h3>Service 1</h3>
+        <p>Status: <span class="status">Offline</span></p>
+        <a href="#" class="details-link">Details</a>
+    </div>
+    <div class="service" data-link="https://example.com/service2">
+        <h3>Service 2</h3>
+        <p>Status: <span class="status">Online</span></p>
+        <a href="#" class="details-link">Details</a>
+    </div>
+    <!-- Add more services as needed -->
+</div>
+
+<div id="dialog" style="display:none;">
+    <p id="service-details"></p>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $(".service").draggable({
+            revert: "invalid",
+            stack: ".service",
+            scroll: false
+        });
+
+        $("#services").droppable({
+            accept: ".service",
+            drop: function(event, ui) {
+                $(this).append(ui.draggable);
+            }
+        });
+
+        $(".details-link").on("click", function(e) {
+            e.preventDefault();
+            var service = $(this).closest(".service");
+            var link = service.data("link");
+            $("#service-details").text("Details for " + service.find("h3").text() + ": " + link);
+            $("#dialog").dialog({
+                modal: true,
+                title: "Service Details",
+                width: 400,
+                buttons: {
+                    Close: function() {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+        });
+    });
+</script>
+
+</body>
+</html>
