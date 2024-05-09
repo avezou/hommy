@@ -4,7 +4,7 @@ import atexit
 import os
 import urllib.request
 from itertools import groupby
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 from sched import scheduler
 from apscheduler.schedulers.background import BackgroundScheduler
 from PIL import Image
@@ -211,6 +211,21 @@ def add():
         
 
     return render_template('add.html', form=form, title='App Form')
+
+@app.route('/get_data')
+def get_data():
+    connect = get_db_connection()
+    apps = connect.execute('SELECT a.id, a.category, a.name, a.internal_url, a.external_url, a.description, a.icon, a.alive, a.extras\
+                            FROM apps a ORDER BY a.category').fetchall()
+    
+    data = {}
+    for app in apps:
+        data[app['name']] = data['alive']
+
+    connect.commit()
+    connect.close()
+    # global database_value
+    return jsonify({'value': data})
 
 
 if __name__ == '__main__':

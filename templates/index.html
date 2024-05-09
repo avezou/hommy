@@ -35,11 +35,7 @@
       <div class="card-content p-2">
         <a href="{{ app['internal_url'] }}" class="card-text" target="_blank">
           <h4 class="card-content">{{ app['name'] }}
-            {% if app['alive'] == 1 %}
-            <span class="dot gradient-green alive-pulse"></span>
-            {% else %}
-            <span class="dot gradient-red"></span>
-            {% endif %}
+            <span id="{{ app['name'] }}" class="dot gradient-red"></span>
           </h4>
         </a>
         <p>{{ app['category'] }}</p>
