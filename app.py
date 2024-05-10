@@ -124,19 +124,18 @@ def edit(id):
         filename = secure_filename(upload_file.filename)
         icon_path = os.path.join(app.config['UPLOAD_PATH'], filename)
         upload_file.save(icon_path)
-        tag1 = form.tag1.data
-        tag2 = form.tag2.data
-        tag3 = form.tag3.data
+        tags = form.tags.data
         extras = form.extras.data
 
         connect.execute('INSERT OR IGNORE INTO categories(cat) VALUES(?)', (category,))
 
-        if str(tag1).isalpha:
-            connect.execute('INSERT OR IGNORE INTO tags (tag) VALUES (?)', (tag1,))
-        if str(tag2).isalpha:
-            connect.execute('INSERT OR IGNORE INTO tags (tag) VALUES (?)', (tag2,))
-        if str(tag3).isalpha:
-            connect.execute('INSERT OR IGNORE INTO tags (tag) VALUES (?)', (tag3,))
+        if len(tags) > 0:
+            if ',' in tags:
+                alltags = tags.split(',')
+                for tag in alltags:
+                    connect.execute('INSERT OR IGNORE INTO tags (tag) VALUES (?)', (tag,))
+            else:
+                connect.execute('INSERT OR IGNORE INTO tags (tag) VALUES (?)', (tags,))
         connect.commit()
 
         connect.execute('UPDATE apps SET name=?, category=?, description=?, internal_url=?, external_url=?, icon=?, extras=?\
@@ -166,39 +165,32 @@ def add():
         filename = secure_filename(upload_file.filename)
         icon_path = os.path.join(app.config['UPLOAD_PATH'], filename)
         upload_file.save(icon_path)
-        tag1 = form.tag1.data
-        tag2 = form.tag2.data
-        tag3 = form.tag3.data
+        tags = form.tags.data
         extras = form.extras.data
 
         connect.execute('INSERT OR IGNORE INTO categories(cat) VALUES(?)', (category,))
 
-        if str(tag1).isalpha:
-            connect.execute('INSERT OR IGNORE INTO tags (tag) VALUES (?)', (tag1,))
-        if str(tag2).isalpha:
-            connect.execute('INSERT OR IGNORE INTO tags (tag) VALUES (?)', (tag2,))
-        if str(tag3).isalpha:
-            connect.execute('INSERT OR IGNORE INTO tags (tag) VALUES (?)', (tag3,))
+        alltags = []
+        if len(tags) > 0:
+            if ',' in tags:
+                alltags = tags.split(',')
+                for tag in alltags:
+                    connect.execute('INSERT OR IGNORE INTO tags (tag) VALUES (?)', (tag.strip(),))
+            else:
+                connect.execute('INSERT OR IGNORE INTO tags (tag) VALUES (?)', (tags,))
         connect.commit()
 
         connect.execute('INSERT OR IGNORE INTO apps (name, category, description, internal_url, external_url, icon, extras)\
-            VALUES (?, ?, ?, ?, ?, ?, ?)', (appName, category, description, internal_url, external_url, icon_path, extras))
+            VALUES (?, ?, ?, ?, ?, ?, ?)', (appName.strip(), category, description, internal_url, external_url, icon_path, extras))
 
         myapp = connect.execute('SELECT id,name FROM apps where name=?', (appName,)).fetchall()[0]
 
         if myapp['id'] > -1:
-            if str(tag1).isalpha:
-                t = connect.execute('SELECT id, tag FROM tags WHERE tag=?', (tag1,)).fetchall()[0]
-                print ("print t: " + str(t['tag']))
-                connect.execute('INSERT INTO app_tags(app_id, tag_id) VALUES(?, ?)', (myapp['id'], t['id']))
-            if str(tag2).isalpha:
-                t = connect.execute('SELECT id, tag FROM tags WHERE tag=?', (tag2,)).fetchall()[0]
-                print ("print t: " + str(t['tag']))
-                connect.execute('INSERT INTO app_tags(app_id, tag_id) VALUES(?, ?)', (myapp['id'], t['id']))
-            if str(tag3).isalpha:
-                t = connect.execute('SELECT id, tag FROM tags WHERE tag=?', (tag3,)).fetchall()[0]
-                print ("print t: " + str(t['tag']))
-                connect.execute('INSERT INTO app_tags(app_id, tag_id) VALUES(?, ?)', (myapp['id'], t['id']))
+            if len(alltags) > 0:
+                for tag in alltags:
+                    t = connect.execute('SELECT id, tag FROM tags WHERE tag=?', (tag,)).fetchall()[0]
+                    print ("print t: " + str(t['tag']))
+                    connect.execute('INSERT INTO app_tags(app_id, tag_id) VALUES(?, ?)', (myapp['id'], t['id']))
             
         connect.commit()
         connect.close()
