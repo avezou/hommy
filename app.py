@@ -220,12 +220,17 @@ def get_data():
     
     data = {}
     for app in apps:
-        data[app['name']] = data['alive']
+        data[app['name']] = app['alive']
 
     connect.commit()
     connect.close()
+    print (data)
     # global database_value
-    return jsonify({'value': data})
+    return jsonify(data)
+
+@app.route('/sample')
+def sample():
+    return render_template('sample.html')
 
 
 if __name__ == '__main__':

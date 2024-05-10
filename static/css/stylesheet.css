@@ -97,3 +97,31 @@ html {
     100% {background: rgb(83, 195, 49);}
 }
 
+
+/* Additional css */
+
+body {
+    font-family: Arial, sans-serif;
+}
+#services {
+    margin: 20px auto;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+}
+.service {
+    padding: 10px;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    width: calc(100% / 6 - 20px);
+    margin-right: 20px;
+}
+.service h3 {
+    margin-top: 0;
+}
+.service .status {
+    font-weight: bold;
+}
+
