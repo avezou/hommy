@@ -110,6 +110,10 @@ def list():
     res =  get_apps()
     return render_template('list.html', apps=res[0])
 
+@app.route('/delete/<int:id>')
+def delete():
+    return render_template('delete.html')
+
 @app.route('/edit/<int:id>', methods=['GET', 'POST'])
 def edit(id):
     form = AppForm()

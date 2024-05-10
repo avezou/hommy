@@ -14,17 +14,19 @@
     </TR>
     {% for app, tags in apps.items() %}
     <TR>
-       <TD>{{ app['name'] }}</TD>
-       <TD>{{ app['category'] }}</TD>
-       <TD>{{ app['description'] }}</TD>
-       <TD>{{ app['icon'] }}</TD>
-       <TD>{{ app['internal_url'] }}</TD>
-       <TD>{{ app['external_url'] }}</TD>
-       <TD>{{ app['extra'] }}</TD>
-       <TD>{% for tag in tags %}
+      <TD>{{ app['name'] }}</TD>
+      <TD>{{ app['category'] }}</TD>
+      <TD>{{ app['description'] }}</TD>
+      <TD>{{ app['icon'] }}</TD>
+      <TD>{{ app['internal_url'] }}</TD>
+      <TD>{{ app['external_url'] }}</TD>
+      <TD>{% for tag in tags %}
         {{ tag['tag'] }}{{ ", " if not loop.last else "" }}
-      {% endfor %} </TD>
-        <TD><a href="{{ url_for('edit', id=app['id']) }}">Edit</a></TD>
+        {% endfor %} 
+      </TD>
+      <TD>{{ app['extra'] }}</TD>
+      <TD><a href="{{ url_for('edit', id=app['id']) }}">Edit</a></TD>
+      <TD><a class="btn-danger" href="{{ url_for('delete', id=app['id']) }}">Delete</a></TD>
     </TR>
     {% endfor %}
     </table>

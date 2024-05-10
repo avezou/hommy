@@ -12,3 +12,5 @@ database.db
 .env
 .flaskenv
 uploads/
+database.db-journal
+
