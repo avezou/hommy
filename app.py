@@ -27,15 +27,11 @@ def update_alive():
     for myapp in apps:
         try:
             response = requests.get(myapp['internal_url'])
-            print("status code: " + str(response.status_code))
             if response.status_code == 200:
                 connect.execute('UPDATE apps SET alive = 1 WHERE id =?', (myapp['id'],))
-                print('App: ' + myapp['name'] + ' at ' + myapp['internal_url'] + ' is alive')
             else:
                 connect.execute('UPDATE apps SET alive = 0 WHERE id =?', (myapp['id'],))
-                print('App: '+ myapp['name'] +' is dead')
         except: 
-            print('App'+ myapp['name'] +'is dead')
             connect.execute('UPDATE apps SET alive = 0 WHERE id =?', (myapp['id'],))
     connect.commit()
     connect.close()
@@ -224,8 +220,6 @@ def get_data():
 
     connect.commit()
     connect.close()
-    print (data)
-    # global database_value
     return jsonify(data)
 
 @app.route('/sample')

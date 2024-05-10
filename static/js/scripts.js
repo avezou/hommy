@@ -1,11 +1,11 @@
 
 function myToggle(e, b) {
     if (b) {
-        e.show(2000);
-        e.parent().show(2000);
+        e.show(300);
+        e.parent().show(300);
     } else {
-        e.hide("slow");
-        e.parent().hide("slow");
+        e.hide("fast");
+        e.parent().hide("fast");
     }
 }
 
@@ -53,11 +53,37 @@ $.ajax({
         console.error('Error:', error);
     }
 })};
-var g = 0
 $(document).ready(function() {
     // Refresh cards every 10 seconds
-    console.log("refreshCards" + g++);
     setInterval(refreshCards, 10000);
+});
+
+function hashCode (str){
+    var hash = 0;
+    if (str.length == 0) return hash;
+    for (i = 0; i < str.length; i++) {
+        char = str.charCodeAt(i);
+        hash = char % 360;
+        console.log("modulo: " + hash)
+        hash = hash + hash; // Convert to 32bit integer
+    }
+    return hash % 360;
+};
+
+var colo = 0
+$(document).ready(function() {
+    $("span.badge").each(function() {
+        var spn = $(this);
+        var spnId = spn.attr("id");
+        if (spnId === undefined) {
+            return;
+        }
+        console.log("spnId: " + spnId);
+        var color = "hsl(" + ((colo + 360) * 360 / 360) + ", 100%, 75%)";
+        console.log("color: " + color);
+        spn.css("background-color", color);
+        colo = colo + 20;
+    });
 });
 
 // Additional script

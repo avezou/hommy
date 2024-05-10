@@ -15,7 +15,7 @@
       <select id='myCategories'>
         <option value="">Filter by Category</option>
         {% for cat in categories %}
-          <option value="{{ cat['cat'] }}">{{ cat['cat'] }}</option>
+          <option class="{{ cat['cat'] }}" value="{{ cat['cat'] }}">{{ cat['cat'] }}</option>
           <h3>{{ cat['cat'] }}</h3>
         {% endfor %}
       </select>
@@ -26,20 +26,18 @@
 <div class="row">
   {% for app, tags in apps.items() %}
   
-  <div class="col-xl-3 col-sm-6 col-12" id="myList">
-    <div class="card">
+  <div id="myList">
       <div class="card-content p-2">
         <a href="{{ app['internal_url'] }}" class="card-text" target="_blank">
           <h4 class="card-content">{{ app['name'] }}
             <span id="{{ app['name'] }}" class="dot gradient-red"></span>
           </h4>
         </a>
-        <p>{{ app['category'] }}</p>
+        <h5><span class="badge" id="{{ app['category'] }}">{{ app['category'] }}</span></h5>
           {% for tag in tags %}
               <span class="badge badge-dark">{{ tag['tag'] }}</span>
           {% endfor %}
       </div>
-    </div>
   </div>
   {% endfor %}
 </div>
