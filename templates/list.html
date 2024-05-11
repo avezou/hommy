@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<table>
+<table class="table table-striped table-bordered table-condensed">
     <TR>
        <TH>Name</TH>
        <TH>Category</TH>
@@ -9,8 +9,9 @@
        <TH>Icon</TH>
        <TH>Local URL</TH>
        <TH>URL</TH>
-       <TH>Extras</TH>
        <TH>Tags</TH>
+       <TH>Edit</TH>
+       <TH>Delete</TH>
     </TR>
     {% for app, tags in apps.items() %}
     <TR>
@@ -24,7 +25,6 @@
         {{ tag['tag'] }}{{ ", " if not loop.last else "" }}
         {% endfor %} 
       </TD>
-      <TD>{{ app['extra'] }}</TD>
       <TD><a href="{{ url_for('edit', id=app['id']) }}">Edit</a></TD>
       <TD><button class="btn-danger" onclick=confirmDelete("{{ app['id'] }}")>Delete</button></TD>
     </TR>
