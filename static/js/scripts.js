@@ -55,7 +55,7 @@ $.ajax({
 })};
 $(document).ready(function() {
     // Refresh cards every 10 seconds
-    setInterval(refreshCards, 10000);
+    setInterval(refreshCards, 15000);
 });
 
 function hashCode (str){
@@ -85,6 +85,12 @@ $(document).ready(function() {
         colo = colo + 20;
     });
 });
+function confirmDelete(id) {
+    var r = confirm("Are you sure you want to delete this item?");
+    if (r == true) {
+        window.location.href = "/delete/" + id;
+    }
+}
 
 // Additional script
 

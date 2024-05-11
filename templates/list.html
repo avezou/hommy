@@ -26,7 +26,7 @@
       </TD>
       <TD>{{ app['extra'] }}</TD>
       <TD><a href="{{ url_for('edit', id=app['id']) }}">Edit</a></TD>
-      <TD><a class="btn-danger" href="{{ url_for('delete', id=app['id']) }}">Delete</a></TD>
+      <TD><button class="btn-danger" onclick=confirmDelete("{{ app['id'] }}")>Delete</button></TD>
     </TR>
     {% endfor %}
     </table>

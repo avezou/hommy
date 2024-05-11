@@ -38,7 +38,7 @@ def update_alive():
     
 
 scheduler = BackgroundScheduler()
-scheduler.add_job(func=update_alive, trigger="interval", seconds=15)
+scheduler.add_job(func=update_alive, trigger="interval", seconds=30)
 scheduler.start()
 
 # Shut down the scheduler when exiting the app
@@ -111,8 +111,13 @@ def list():
     return render_template('list.html', apps=res[0])
 
 @app.route('/delete/<int:id>')
-def delete():
-    return render_template('delete.html')
+def delete(id):
+    connect = get_db_connection()
+    connect.execute('DELETE FROM apps WHERE id =?', (id,))
+    connect.execute('DELETE FROM app_tags WHERE app_id =?', (id,))
+    connect.commit()
+    connect.close()
+    return redirect(url_for('list'))
 
 @app.route('/edit/<int:id>', methods=['GET', 'POST'])
 def edit(id):
