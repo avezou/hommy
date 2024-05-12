@@ -12,6 +12,7 @@ from flask_bootstrap import Bootstrap
 from config import Config
 from forms import AppForm
 from werkzeug.utils import secure_filename
+from PIL import Image
 
 
 app = Flask(__name__, template_folder='templates')
@@ -130,9 +131,15 @@ def edit(id):
         internal_url = form.internal_url.data
         external_url = form.external_url.data
         upload_file = form.icon.data
+        image = Image.open(upload_file)
+        width, height = 200, 200
+        image = image.resize((width, height))
         filename = secure_filename(upload_file.filename)
+        image.save(filename)
+
+        # filename = secure_filename(upload_file.filename)
         icon_path = os.path.join(app.config['UPLOAD_PATH'], filename)
-        upload_file.save(icon_path)
+        upload_file.save(filename)
         tags = form.tags.data
         extras = form.extras.data
 
@@ -172,10 +179,12 @@ def add():
         external_url = form.external_url.data
         upload_file = form.icon.data
         filename = secure_filename(upload_file.filename)
-        icon_path = os.path.join(app.config['UPLOAD_PATH'], filename)
+        icon_path = os.path.abspath(os.path.join(app.config['UPLOAD_PATH'], filename))
         upload_file.save(icon_path)
         tags = form.tags.data
         extras = form.extras.data
+
+        print ("icon path: " + str(icon_path))
 
         connect.execute('INSERT OR IGNORE INTO categories(cat) VALUES(?)', (category,))
 
