@@ -42,11 +42,25 @@ $.ajax({
         $("span.dot").each(function() {
             var spn = $(this);
             var spnId = spn.attr("id");
-            if (response[spnId] == 1) {
-                spn.addClass("gradient-green").removeClass('gradient-red');
-            } else {
-                spn.addClass("gradient-red").removeClass('gradient-green');
-            }
+            var spnUrl = response[spnId];
+            console.log("spnUrl: " + spnUrl);
+            
+            $.ajax({spnUrl,
+                type: "HEAD",
+                timeout: 3000, 
+                statusCode: {
+                    200: function() {
+                        console.log("working : " + 200);
+                        spn.addClass("gradient-green").removeClass('gradient-red');        
+                    },
+                    404: function() {
+                        spn.addClass("gradient-red").removeClass('gradient-green');        
+                    },
+                    0: function() {
+                        spn.addClass("gradient-red").removeClass('gradient-green');        
+                    }
+                }
+            });
         });
     },
     error: function(xhr, status, error) {

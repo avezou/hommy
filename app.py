@@ -21,26 +21,8 @@ app.config.from_object(Config)
 bootstrap = Bootstrap(app)
 
 
-def update_alive():
-    connect = get_db_connection()
-    apps = connect.execute('SELECT a.id, a.name, a.internal_url, a.external_url, a.description, a.icon, a.alive\
-                            FROM apps a').fetchall()
-    for myapp in apps:
-        try:
-            response = requests.get(myapp['internal_url'])
-            if response.status_code == 200:
-                connect.execute('UPDATE apps SET alive = 1 WHERE id =?', (myapp['id'],))
-            else:
-                connect.execute('UPDATE apps SET alive = 0 WHERE id =?', (myapp['id'],))
-        except: 
-            connect.execute('UPDATE apps SET alive = 0 WHERE id =?', (myapp['id'],))
-    connect.commit()
-    connect.close()
     
 
-scheduler = BackgroundScheduler()
-scheduler.add_job(func=update_alive, trigger="interval", seconds=30)
-scheduler.start()
 
 # Shut down the scheduler when exiting the app
 atexit.register(lambda: scheduler.shutdown())
@@ -226,7 +208,7 @@ def get_data():
     
     data = {}
     for app in apps:
-        data[app['name']] = app['alive']
+        data[app['name']] = app['internal_url']
 
     connect.commit()
     connect.close()
