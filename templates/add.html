@@ -6,10 +6,17 @@
         <div class="col-md-12">
             <h1> {{ title }} </h1>
         </div>
-        <div class="row">
-            <div class="col-md-6">
-            {{ wtf.quick_form(form) }}
+        <div class="container">
+            <div class="row">
+              <div class="col-md-10 col-lg-8 mx-lg-auto mx-md-auto">
+          
+                <div class="row">
+                    <div class="col-md-6 table">
+                    {{ wtf.quick_form(form) }}
+                    </div>
+                </div>
             </div>
+        </div>
         </div>
     </div>
     <hr>
@@ -18,21 +25,26 @@
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th>Name</th>
+                        <th>Id</th>
+                        <th>{{ items }}</th>
                         <th>Category</th>
                         <th>Description</th>
                         <th>Internal Url</th>
-                        <th>Icon</th>
+                        <th>External Url</th>
+                        
                     </tr>
                 </thead>
                 <tbody>
+                    {% for item in items %}
                      <tr>
-                        <td>#</td>
-                        <td>#</td>
-                        <td>#</td>
-                        <td>#</td>
-                        <td>#</td>
+                        <td>{{ item['id'] }}</td> 
+                        <td>{{ item['name'] }}</td>
+                        <td>{{ item['category'] }}</td>
+                        <td>{{ item['description'] }}</td>
+                        <td>{{ item['internal_url'] }}</td>
+                        <td>{{ item['external_url'] }}</td>
                     </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
