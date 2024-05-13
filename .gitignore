@@ -13,4 +13,5 @@ database.db
 .flaskenv
 uploads/
 database.db-journal
-
+database.db-shm
+database.db-wal

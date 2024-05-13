@@ -19,6 +19,7 @@ bootstrap = Bootstrap(app)
 
 def get_db_connection():
     connect = sqlite3.connect('./database.db')
+    connect.execute('pragma journal_mode=wal')
     connect.row_factory = sqlite3.Row
     return connect
 

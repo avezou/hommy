@@ -3,6 +3,8 @@ DROP TABLE IF EXISTS tags;
 DROP TABLE IF EXISTS categories;
 DROP TABLE IF EXISTS app_tags;
 
+PRAGMA journal_mode=wal;
+
 CREATE TABLE apps (
     id INTEGER PRIMARY KEY AUTOINCREMENT, 
     category text NOT NULL,
