@@ -91,3 +91,17 @@ h3 {
     background-image: linear-gradient(to bottom, #f52424, #590b04);
     border-radius: 10px;
 }
+
+table {
+    table-layout: responsive-sm;
+}
+
+th {
+    background-color: #68645c;
+    color: white;
+}
+
+td {
+    white-space: normal !important;
+    word-wrap: break-word;
+}

@@ -152,6 +152,8 @@ def edit(id):
 @app.route('/add', methods=['GET', 'POST'])
 def add():
     form = AppForm()
+    allApps = []
+    alltags = []
     if form.validate_on_submit():
         connect = get_db_connection()
         appName = form.name.data
@@ -168,9 +170,10 @@ def add():
 
         print ("icon path: " + str(icon_path))
 
-        connect.execute('INSERT OR IGNORE INTO categories(cat) VALUES(?)', (category,))
+        # connect.execute('INSERT OR IGNORE INTO categories(cat) VALUES(?)', (category,))
+        allApps = connect.execute('SELECT id, name, category, description, internal_url, external_url FROM apps').fetchall()
 
-        alltags = []
+        # alltags = []
         if len(tags) > 0:
             if ',' in tags:
                 alltags = tags.split(',')
@@ -178,6 +181,7 @@ def add():
                     connect.execute('INSERT OR IGNORE INTO tags (tag) VALUES (?)', (tag.strip(),))
             else:
                 connect.execute('INSERT OR IGNORE INTO tags (tag) VALUES (?)', (tags,))
+                allTags = tags.strip()
         connect.commit()
 
         connect.execute('INSERT OR IGNORE INTO apps (name, category, description, internal_url, external_url, icon, extras)\
@@ -198,7 +202,7 @@ def add():
         return redirect(url_for('index'))
         
 
-    return render_template('add.html', form=form, title='App Form')
+    return render_template('add.html', form=form, title='App Form', items=alltags)
 
 @app.route('/get_data')
 def get_data():
