@@ -37,7 +37,8 @@ def get_apps():
     connect = get_db_connection()
     apps = connect.execute('SELECT a.id, a.category, a.name, a.internal_url, a.external_url, a.description, a.icon, a.alive, a.extras\
                             FROM apps a ORDER BY a.category').fetchall()
-
+    if len(apps) == 0:
+        return []
 
     newapp = {}
     for myapp in apps:
@@ -85,12 +86,16 @@ def get_apps():
 def index():
     
     res = get_apps()
+    if len(res) <= 0:
+        return render_template('index.html')     
 
     return render_template('index.html', apps=res[0], tags=res[1], categories=res[2], appNames=res[3]) 
 
 @app.route('/list', methods=['GET', 'POST'])
 def list():
     res =  get_apps()
+    if len(res) <= 0:
+        return render_template('index.html')          
     return render_template('list.html', apps=res[0])
 
 @app.route('/delete/<int:id>')
@@ -104,28 +109,34 @@ def delete(id):
 
 @app.route('/edit/<int:id>', methods=['GET', 'POST'])
 def edit(id):
-    form = AppForm()
+    connect = get_db_connection()
+    app = connect.execute('SELECT * FROM apps WHERE id =?', (id,)).fetchone()
+    dbtags = connect.execute('SELECT tag\
+                            FROM app_tags a\
+                            JOIN tags t ON a.tag_id = t.id\
+                            WHERE a.app_id =?', (id,)).fetchall()
+
+    tags = []
+    for tag in dbtags:
+        tags.append(tag['tag'])
+    form = AppForm(obj=app)
+    form.name.data = app['name']
+    form.category.data = app['category']
+    form.description.data = app['description']
+    form.internal_url.data = app['internal_url']
+    form.external_url.data = app['external_url']
+    form.tags.data = ','.join(tags)
+    form.icon.data = app['icon']
+    form.extras.data = app['extras']
+
     if form.validate_on_submit():
-        connect = get_db_connection()
         appName = form.name.data
         category = form.category.data
         description = form.description.data
         internal_url = form.internal_url.data
         external_url = form.external_url.data
-        upload_file = form.icon.data
-        image = Image.open(upload_file)
-        width, height = 200, 200
-        image = image.resize((width, height))
-        filename = secure_filename(upload_file.filename)
-        image.save(filename)
-
-        # filename = secure_filename(upload_file.filename)
-        icon_path = os.path.join(app.config['UPLOAD_PATH'], filename)
-        upload_file.save(filename)
         tags = form.tags.data
         extras = form.extras.data
-
-        connect.execute('INSERT OR IGNORE INTO categories(cat) VALUES(?)', (category,))
 
         if len(tags) > 0:
             if ',' in tags:
@@ -135,9 +146,25 @@ def edit(id):
             else:
                 connect.execute('INSERT OR IGNORE INTO tags (tag) VALUES (?)', (tags,))
         connect.commit()
+        if form.icon.data:
+            upload_file = form.icon.data
+            image = Image.open(upload_file)
+            width, height = 200, 200
+            image = image.resize((width, height))
+            filename = secure_filename(upload_file.filename)
+            image.save(filename)
 
-        connect.execute('UPDATE apps SET name=?, category=?, description=?, internal_url=?, external_url=?, icon=?, extras=?\
-            WHERE id=?', (appName, category, description, internal_url, external_url, icon_path, extras, id))
+            # filename = secure_filename(upload_file.filename)
+            icon_path = os.path.join(app.config['UPLOAD_PATH'], filename)
+            upload_file.save(filename)
+        
+
+            connect.execute('UPDATE apps SET name=?, category=?, description=?, internal_url=?, external_url=?, icon=?, extras=?\
+                WHERE id=?', (appName, category, description, internal_url, external_url, icon_path, extras, id))
+        else:
+            connect.execute('UPDATE apps SET name=?, category=?, description=?, internal_url=?, external_url=?, extras=?\
+                WHERE id=?', (appName, category, description, internal_url, external_url, extras, id))
+
 
         connect.commit()
         connect.close()

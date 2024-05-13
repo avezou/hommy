@@ -23,6 +23,7 @@
       <input type="text" id="mySearch" placeholder="Search">
     </div>
 </section>
+{% if apps|length > 0%}
 <div class="row">
   {% for app, tags in apps.items() %}
   
@@ -44,4 +45,5 @@
   </div>
   {% endfor %}
 </div>
+{% endif %}
 {% endblock %}
