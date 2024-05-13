@@ -29,8 +29,10 @@
   <div id="myList">
       <div class="card-content p-2">
         <a href="{{ app['internal_url'] }}" class="card-text" target="_blank">
-          <span><img src="{{ app['icon'] }}" alt="Logo" width="50"></span>
-          <h4 class="card-content">{{ app['name'] }}
+          
+          <h4 class="card-content">
+            <span><img src="{{ app['icon'] }}" alt="Logo" width="30" height="30"></span>
+            {{ app['name'] }}
             <span id="{{ app['name'] }}" class="dot gradient-red"></span>
           </h4>
         </a>
