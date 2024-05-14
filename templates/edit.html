@@ -2,7 +2,8 @@
 {% import 'bootstrap/wtf.html' as wtf %}
 
 {% block content %}
-<form>
+<form  method="POST" action="{{ url_for('list') }}">
+    {{ form.csrf_token }}
     <div class="container">
     <div class="form-row">
       <div class="form-group col-md-6">
@@ -39,7 +40,7 @@
     </div>
     <div class="form-group">
         <label for="extras">Extras</label>
-        <input type="text" class="form-control" id="extras" placeholder="Extras (format)" value="{{ form.extras.data }}">
+        <input type="text" class="form-control" id="extras" placeholder="Additional data" value="{{ form.extras.data }}">
     </div>
     <div class="form-group">
         <button type="submit" class="btn btn-primary">Save</button>

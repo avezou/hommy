@@ -181,7 +181,6 @@ def add():
             if len(alltags) > 0:
                 for tag in alltags:
                     t = execute_query('SELECT id, tag FROM tags WHERE tag=?', (tag,), one=True)
-                    print ("print t: " + str(t['tag']))
                     execute_query('INSERT INTO app_tags(app_id, tag_id) VALUES(?, ?)', (myapp['id'], t['id']))
             
         return redirect(url_for('index'))

@@ -16,7 +16,6 @@ def getCategories():
     categories = []
     for cat in allCategories:
         categories.append(cat['cat'])
-        print ("category: " + cat['cat'])
 
     return categories
 
