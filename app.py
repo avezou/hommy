@@ -3,7 +3,7 @@ import requests
 import os
 import urllib.request
 from itertools import groupby
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, request, redirect, url_for, jsonify, flash
 from PIL import Image
 from flask_bootstrap import Bootstrap
 from config import Config
@@ -89,25 +89,24 @@ def delete(id):
 @app.route('/edit/<int:id>', methods=['GET', 'POST'])
 def edit(id):
     app = execute_query('SELECT * FROM apps WHERE id =?', (id,), one=True)
-    dbtags = execute_query('SELECT tag\
-                            FROM tags t\
-                            JOIN app_tags a ON a.tag_id = t.id\
-                            WHERE a.app_id =?', (id,))
-    tags = []
-    for tag in dbtags:
-        print("avezou tag: " + str(tag['tag']))
-        tags.append(tag['tag'])
+    dbtags = execute_query('SELECT tag FROM tags t JOIN app_tags a ON a.tag_id = t.id WHERE a.app_id =?', (id,))
+    tags = [tag['tag'] for tag in dbtags]
+
     form = AppForm(obj=app)
+    form.tags.data = ','.join(tags)
     form.name.data = app['name']
     form.category.data = app['category']
     form.description.data = app['description']
     form.internal_url.data = app['internal_url']
     form.external_url.data = app['external_url']
-    form.tags.data = ','.join(tags)
-    form.icon.data = app['icon']
     form.extras.data = app['extras']
+    form.icon.data = app['icon']
+
+    # Prefill file input field with existing icon path
+    form.icon.process_data(app['icon'])
 
     if form.validate_on_submit():
+        # Extract form data
         appName = form.name.data
         category = form.category.data
         description = form.description.data
@@ -116,32 +115,20 @@ def edit(id):
         tags = form.tags.data
         extras = form.extras.data
 
-        if len(tags) > 0:
-            if ',' in tags:
-                alltags = tags.split(',')
-                for tag in alltags:
-                    execute_query('INSERT OR IGNORE INTO tags (tag) VALUES (?)', (tag,))
+        # Handle file upload
+        if 'icon' in request.files:
+            upload_file = request.files['icon']
+            if upload_file.filename != '':
+                filename = secure_filename(upload_file.filename)
+                icon_path = os.path.join(app.config['UPLOAD_PATH'], filename)
+                upload_file.save(icon_path)
             else:
-                execute_query('INSERT OR IGNORE INTO tags (tag) VALUES (?)', (tags,))
-        if form.icon.data:
-            upload_file = form.icon.data
-            image = Image.open(upload_file)
-            width, height = 200, 200
-            image = image.resize((width, height))
-            filename = secure_filename(upload_file.filename)
-            image.save(filename)
+                # Keep the existing icon path if no new file is selected
+                icon_path = app['icon']
 
-            # filename = secure_filename(upload_file.filename)
-            icon_path = os.path.join(app.config['UPLOAD_PATH'], filename)
-            upload_file.save(filename)
-        
-            # connect = get_db_connection()
-            execute_query('UPDATE apps SET name=?, category=?, description=?, internal_url=?, external_url=?, icon=?, extras=?\
-                WHERE id=?', (appName, category, description, internal_url, external_url, icon_path, extras, id))
-        else:
-            # connect = get_db_connection()
-            execute_query('UPDATE apps SET name=?, category=?, description=?, internal_url=?, external_url=?, extras=?\
-                WHERE id=?', (appName, category, description, internal_url, external_url, extras, id))
+        # Update app data in the database
+        execute_query('UPDATE apps SET name=?, category=?, description=?, internal_url=?, external_url=?, icon=?, extras=? WHERE id=?',
+                      (appName, category, description, internal_url, external_url, icon_path, extras, id))
 
         return redirect(url_for('list'))
 
