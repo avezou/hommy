@@ -1,6 +1,7 @@
 import sqlite3
 import requests
 import os
+import pathlib
 import urllib.request
 from itertools import groupby
 from flask import Flask, render_template, request, redirect, url_for
@@ -9,7 +10,6 @@ from flask_bootstrap import Bootstrap
 from config import Config
 from forms import AppForm
 from werkzeug.utils import secure_filename
-from PIL import Image
 
 
 app = Flask(__name__, template_folder='templates')
@@ -93,6 +93,7 @@ def edit(id):
     app = execute_query('SELECT * FROM apps WHERE id =?', (id,), one=True)
     dbtags = execute_query('SELECT tag FROM tags t JOIN app_tags a ON a.tag_id = t.id WHERE a.app_id =?', (id,))
     tags = [tag['tag'] for tag in dbtags]
+    all_tags = execute_query('SELECT tag FROM tags')
 
     form = AppForm()
     form.tags.process_data(','.join(tags))
@@ -136,9 +137,17 @@ def edit(id):
 
         return redirect(url_for('list'))
 
-    return render_template('edit.html', form=form)
+    return render_template('edit.html', form=form, icons=get_icon_list(), tags=all_tags)
 
 
+def get_icon_list():
+    svg_dir = pathlib.Path('static/images/svg')
+    icons = []
+    for item in svg_dir.iterdir():
+        if item.is_file():
+            ico = item.name.split('.')[0]
+            icons.append(ico)
+    return icons
 
 @app.route('/add', methods=['GET', 'POST'])
 def add():
@@ -185,7 +194,7 @@ def add():
             
         return redirect(url_for('index'))
         
-    return render_template('add.html', form=form, title='App Form', items=alltags)
+    return render_template('add.html', form=form, title='App Form', items=alltags, icons=get_icon_list())
 
 
 if __name__ == '__main__':
