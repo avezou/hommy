@@ -48,11 +48,6 @@ def get_apps():
                             JOIN app_tags at\
                             ON a.id = at.tag_id \
                             WHERE at.app_id = ? ORDER BY a.tag', (myapp['id'],))
-        category = execute_query('SELECT c.cat\
-                            FROM apps a\
-                            JOIN categories c\
-                            ON a.category = c.cat \
-                            WHERE a.id = ?', (myapp['id'],))
 
         new_app[myapp] = tags
 
@@ -72,7 +67,7 @@ def index():
 
 
 @app.route('/list', methods=['GET', 'POST'])
-def list():
+def list_apps():
     res = get_apps()
     if len(res) <= 0:
         return render_template('index.html')
@@ -89,20 +84,20 @@ def delete(id):
 
 @app.route('/edit/<int:id>', methods=['GET', 'POST'])
 def edit(id):
-    app = execute_query('SELECT * FROM apps WHERE id =?', (id,), one=True)
-    dbtags = execute_query('SELECT tag FROM tags t JOIN app_tags a ON a.tag_id = t.id WHERE a.app_id =?', (id,))
-    tags = [tag['tag'] for tag in dbtags]
+    db_app = execute_query('SELECT * FROM apps WHERE id =?', (id,), one=True)
+    db_tags = execute_query('SELECT tag FROM tags t JOIN app_tags a ON a.tag_id = t.id WHERE a.app_id =?', (id,))
+    tags = [tag['tag'] for tag in db_tags]
     all_tags = execute_query('SELECT tag FROM tags')
 
     form = AppForm()
     form.tags.process_data(','.join(tags))
-    form.name.data = app['name']
-    form.category.data = app['category']
-    form.description.data = app['description']
-    form.internal_url.data = app['internal_url']
-    form.external_url.data = app['external_url']
-    form.extras.data = app['extras']
-    form.icon.data = app['icon']
+    form.name.data = db_app['name']
+    form.category.data = db_app['category']
+    form.description.data = db_app['description']
+    form.internal_url.data = db_app['internal_url']
+    form.external_url.data = db_app['external_url']
+    form.extras.data = db_app['extras']
+    form.icon.data = db_app['icon']
 
     if form.validate_on_submit():
         # Extract form data
