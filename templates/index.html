@@ -34,7 +34,7 @@
           <h4 class="card-content">
             <span><img src="{{ app['icon'] }}" alt="Logo" width="30" height="30"></span>
             {{ app['name'] }}
-            <span id="{{ app['name'] }}" class="dot gradient-red"></span>
+            <span id="{{ app['name'] }}" class="dot gradient-red" data-url="{{ app['internal_url'] }}"></span>
           </h4>
         </a>
         <h5><span class="badge" id="{{ app['category'] }}">{{ app['category'] }}</span></h5>

@@ -18,34 +18,4 @@
         </div>
         </div>
     </div>
-    <hr>
-    <div class="row">
-        <div class="col-sm-12">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>{{ items }}</th>
-                        <th>Category</th>
-                        <th>Description</th>
-                        <th>Internal Url</th>
-                        <th>External Url</th>
-                        
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in items %}
-                     <tr>
-                        <td>{{ item['id'] }}</td> 
-                        <td>{{ item['name'] }}</td>
-                        <td>{{ item['category'] }}</td>
-                        <td>{{ item['description'] }}</td>
-                        <td>{{ item['internal_url'] }}</td>
-                        <td>{{ item['external_url'] }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
 {% endblock %}

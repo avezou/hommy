@@ -2,8 +2,7 @@
 {% import 'bootstrap/wtf.html' as wtf %}
 
 {% block content %}
-<form  method="POST" action="{{ url_for('list') }}">
-    {{ form.csrf_token }}
+<form method="POST">
     <div class="container">
     <div class="form-row">
       <div class="form-group col-md-6">

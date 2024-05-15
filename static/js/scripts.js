@@ -34,42 +34,33 @@ $('select[id="myCategories"]').change(function() {
     });
 });
 function refreshCards() {
-    // AJAX call to fetch data from Flask backend
-$.ajax({
-    url: '/get_data',
-    type: 'GET',
-    success: function(response) {
-        $("span.dot").each(function() {
-            var spn = $(this);
-            var spnId = spn.attr("id");
-            var spnUrl = response[spnId];
-            console.log("spnUrl: " + spnUrl);
-            
-            $.ajax({spnUrl,
-                type: "HEAD",
-                timeout: 3000, 
-                statusCode: {
-                    200: function() {
-                        console.log("working : " + 200);
-                        spn.addClass("gradient-green").removeClass('gradient-red');        
-                    },
-                    404: function() {
-                        spn.addClass("gradient-red").removeClass('gradient-green');        
-                    },
-                    0: function() {
-                        spn.addClass("gradient-red").removeClass('gradient-green');        
-                    }
+    $("span.dot").each(function() {
+        var spn = $(this);
+        var spnId = spn.attr("id");
+        var spnUrl = spn.attr("data-url");
+        console.log("spnUrl: " + spnUrl);
+        
+        $.ajax({spnUrl,
+            type: "HEAD",
+            timeout: 3000, 
+            statusCode: {
+                200: function() {
+                    console.log("working : " + 200);
+                    spn.addClass("gradient-green").removeClass('gradient-red');        
+                },
+                404: function() {
+                    spn.addClass("gradient-red").removeClass('gradient-green');        
+                },
+                0: function() {
+                    spn.addClass("gradient-red").removeClass('gradient-green');        
                 }
-            });
+            }
         });
-    },
-    error: function(xhr, status, error) {
-        console.error('Error:', error);
-    }
-})};
+    });
+};
 $(document).ready(function() {
     // Refresh cards every 10 seconds
-    setInterval(refreshCards, 15000);
+    setInterval(refreshCards, 10000);
 });
 
 function hashCode (str){
