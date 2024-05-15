@@ -32,7 +32,7 @@
         <a href="{{ app['internal_url'] }}" class="card-text" target="_blank">
           
           <h4 class="card-content">
-            <span><img src="{{ app['icon'] }}" alt="Logo" width="30" height="30"></span>
+            <span><img src="{{ url_for('static', filename='images/svg/' + app['icon'] + '.svg') }}" alt="Logo" width="30" height="30"></span>
             {{ app['name'] }}
             <span id="{{ app['name'] }}" class="dot gradient-red" data-url="{{ app['internal_url'] }}"></span>
           </h4>

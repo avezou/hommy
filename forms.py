@@ -3,7 +3,6 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, TextAreaField, BooleanField, URLField, IntegerField, SelectField
 import wtforms.form as forms
 from wtforms.validators import DataRequired, Length, URL, Regexp, Optional
-from flask_wtf.file import FileField, FileAllowed, FileRequired
 
 
 def getCategories():
@@ -25,7 +24,7 @@ class AppForm(FlaskForm):
     description = StringField('Description', validators=[DataRequired(),])
     internal_url = URLField('Internal Url', validators=[DataRequired(), URL()])
     external_url = URLField('External Url', validators=[DataRequired(), URL()])
-    icon = FileField('Icon', validators=[FileRequired(), FileAllowed(['jpg', 'jpeg', 'png', 'ico', 'gif', 'webp', 'svg'], 'Images only!')])
+    icon = StringField('Icon', validators=[DataRequired(),])
     tags = StringField('Tags (Separate multilple tags with a comma).', validators=[Regexp('[^,\s][^\,]*[^,\s]*', message='Tags must contain letters only'), Length(min=3, max=25)])
     extras = TextAreaField("Extras")
 

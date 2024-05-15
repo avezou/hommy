@@ -103,7 +103,7 @@ def edit(id):
     form.internal_url.data = app['internal_url']
     form.external_url.data = app['external_url']
     form.extras.data = app['extras']
-    form.icon.process_data(app['icon'])
+    form.icon.data = app['icon']
 
     if form.validate_on_submit():
         # Extract form data
@@ -113,27 +113,15 @@ def edit(id):
         internal_url = form.internal_url.data
         external_url = form.external_url.data
         extras = form.extras.data
+        icon = form.icon.data
 
-        # Handle file upload
-        if 'icon' in request.files:
-            upload_file = request.files['icon']
-            if upload_file.filename != '':
-                filename = secure_filename(upload_file.filename)
-                icon_path = os.path.join(app.config['UPLOAD_PATH'], filename)
-                upload_file.save(icon_path)
-            else:
-                # Keep the existing icon path if no new file is selected
-                icon_path = app['icon']
-        else:
-            # Keep the existing icon path if no file is uploaded
-            icon_path = app['icon']
 
         # Process tags from the form
         tags = form.tags.data.split(',')
 
         # Update app data in the database
         execute_query('UPDATE apps SET name=?, category=?, description=?, internal_url=?, external_url=?, icon=?, extras=? WHERE id=?',
-                      (appName, category, description, internal_url, external_url, icon_path, extras, id))
+                      (appName, category, description, internal_url, external_url, icon, extras, id))
 
         return redirect(url_for('list'))
 
@@ -162,13 +150,10 @@ def add():
         internal_url = form.internal_url.data
         external_url = form.external_url.data
         upload_file = form.icon.data
-        filename = secure_filename(upload_file.filename)
-        icon_path = os.path.join(app.config['UPLOAD_PATH'], filename)
-        upload_file.save(icon_path)
         tags = form.tags.data
         extras = form.extras.data
+        icon = form.icon.data
 
-        print ("icon path: " + str(icon_path))
 
         allApps = execute_query('SELECT id, name, category, description, internal_url, external_url FROM apps')
 
@@ -182,7 +167,7 @@ def add():
                 allTags = tags.strip()
 
         execute_query('INSERT OR IGNORE INTO apps (name, category, description, internal_url, external_url, icon, extras)\
-            VALUES (?, ?, ?, ?, ?, ?, ?)', (appName.strip(), category, description, internal_url, external_url, icon_path, extras))
+            VALUES (?, ?, ?, ?, ?, ?, ?)', (appName.strip(), category, description, internal_url, external_url, icon, extras))
 
         myapp = execute_query('SELECT id,name FROM apps where name=?', (appName,), one=True)
 
