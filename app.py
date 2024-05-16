@@ -104,6 +104,9 @@ def edit(app_id):
         # Process tags from the form
         tags = form.tags.data.split(',')
 
+        # execute_query('DELETE FROM tags t JOIN app_tags at ON t.id = at.tag_id WHERE app_id=?', (app_id,))
+        # execute_query('DELETE FROM app_tags WHERE app_id=?', (app_id,))
+
         for tag in tags:
             execute_query('INSERT OR IGNORE INTO tags (tag) VALUES (?)', (tag.strip(),))
 
@@ -113,7 +116,7 @@ def edit(app_id):
             'extras=? WHERE id=?',
             (app_name, category, description, internal_url, external_url, icon, extras, app_id))
 
-        myapp = execute_query('SELECT id,name FROM apps where name=?', (app_name,), one=True)
+        myapp = execute_query('SELECT id,name FROM apps where name=?', (app_name,), one=True)        
 
         if myapp['id'] > -1:
             for tag in tags:
