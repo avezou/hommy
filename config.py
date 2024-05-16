@@ -9,3 +9,4 @@ load_dotenv()
 class Config(object):
     SECRET_KEY = os.getenv('SECRET_KEY') or 'DefaultEasyToGuessKeyHere$@*&#56374'
     UPLOAD_PATH = os.getenv('UPLOAD_PATH') or '/home/avezou/git/hommy/'
+    

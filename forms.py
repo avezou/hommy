@@ -5,7 +5,7 @@ import wtforms.form as forms
 from wtforms.validators import DataRequired, Length, URL, Regexp, Optional
 
 
-def getCategories():
+def get_categories():
     connect = sqlite3.connect('./database.db')
     connect.row_factory = sqlite3.Row
     allCategories = connect.execute('SELECT c.cat\
@@ -20,7 +20,7 @@ def getCategories():
 
 class AppForm(FlaskForm):
     name = StringField('AppName', validators=[DataRequired(), Length(min=3, max=15)])
-    category = SelectField('Category', validators=[DataRequired(),], choices=getCategories())
+    category = SelectField('Category', validators=[DataRequired(),], choices=get_categories())
     description = StringField('Description', validators=[DataRequired(),])
     internal_url = URLField('Internal Url', validators=[DataRequired(), URL()])
     external_url = URLField('External Url', validators=[DataRequired(), URL()])

@@ -35,21 +35,22 @@ def allowed_file(filename):
 
 
 def get_apps():
-    apps = execute_query('SELECT a.id, a.category, a.name, a.internal_url, a.external_url, a.description, a.icon, a.alive, a.extras\
+    apps = execute_query('SELECT a.id, a.category, a.name, a.internal_url, a.external_url, \
+    a.description, a.icon, a.alive, a.extras\
                             FROM apps a ORDER BY a.category')
     if len(apps) == 0:
         return []
     new_app = {}
     search_apps = ''
-    for myapp in apps:
-        search_apps = myapp['name'].lower()
+    for my_app in apps:
+        search_apps = my_app['name'].lower()
         tags = execute_query('SELECT a.id, a.tag\
                             FROM tags a \
                             JOIN app_tags at\
                             ON a.id = at.tag_id \
-                            WHERE at.app_id = ? ORDER BY a.tag', (myapp['id'],))
+                            WHERE at.app_id = ? ORDER BY a.tag', (my_app['id'],))
 
-        new_app[myapp] = tags
+        new_app[my_app] = tags
 
     all_tags = execute_query('SELECT a.id, a.tag\
                             FROM tags a ORDER BY a.tag')
@@ -75,22 +76,22 @@ def list_apps():
 
 
 @app.route('/delete/<int:id>')
-def delete(id):
-    execute_query('DELETE FROM apps WHERE id =?', (id,))
-    execute_query('DELETE FROM app_tags WHERE app_id =?', (id,))
-    orphaned_tags = execute_query('DELETE from tags WHERE id NOT IN (SELECT tag_id FROM app_tags) RETURNING id')
+def delete(app_id):
+    execute_query('DELETE FROM apps WHERE id =?', (app_id,))
+    execute_query('DELETE FROM app_tags WHERE app_id =?', (app_id,))
+    # orphaned_tags = execute_query('DELETE from tags WHERE id NOT IN (SELECT tag_id FROM app_tags) RETURNING id')
     return redirect(url_for('list'))
 
 
-@app.route('/edit/<int:id>', methods=['GET', 'POST'])
-def edit(id):
-    db_app = execute_query('SELECT * FROM apps WHERE id =?', (id,), one=True)
-    db_tags = execute_query('SELECT tag FROM tags t JOIN app_tags a ON a.tag_id = t.id WHERE a.app_id =?', (id,))
+@app.route('/edit/<int:app_id>', methods=['GET', 'POST'])
+def edit(app_id):
+    db_app = execute_query('SELECT * FROM apps WHERE id =?', (app_id,), one=True)
+    db_tags = execute_query('SELECT tag FROM tags t JOIN app_tags a ON a.tag_id = t.id WHERE a.app_id =?', (app_id,))
     tags = [tag['tag'] for tag in db_tags]
-    all_tags = execute_query('SELECT tag FROM tags')
+    # all_tags = execute_query('SELECT tag FROM tags')
 
     form = AppForm()
-    form.tags.process_data(','.join(tags))
+    form.tags.data = ','.join(tags)
     form.name.data = db_app['name']
     form.category.data = db_app['category']
     form.description.data = db_app['description']
@@ -119,7 +120,7 @@ def edit(id):
         execute_query(
             'UPDATE apps SET name=?, category=?, description=?, internal_url=?, external_url=?, icon=?, '
             'extras=? WHERE id=?',
-            (app_name, category, description, internal_url, external_url, icon, extras, id))
+            (app_name, category, description, internal_url, external_url, icon, extras, app_id))
 
         myapp = execute_query('SELECT id,name FROM apps where name=?', (app_name,), one=True)
 
@@ -130,7 +131,7 @@ def edit(id):
 
         return redirect(url_for('list'))
 
-    return render_template('edit.html', form=form, icons=get_icon_list(), tags=all_tags)
+    return render_template('edit.html', form=form, icons=get_icon_list())
 
 
 def get_icon_list():
@@ -146,7 +147,7 @@ def get_icon_list():
 @app.route('/add', methods=['GET', 'POST'])
 def add():
     form = AppForm()
-    all_tags = []
+    app_tags = []
     if form.validate_on_submit():
 
         app_name = form.name.data
@@ -158,30 +159,27 @@ def add():
         extras = form.extras.data
         icon = form.icon.data
 
-        if len(tags) > 0:
-            if ',' in tags:
-                all_tags = tags.split(',')
-                for tag in all_tags:
-                    execute_query('INSERT OR IGNORE INTO tags (tag) VALUES (?)', (tag.strip(),))
-            else:
-                execute_query('INSERT OR IGNORE INTO tags (tag) VALUES (?)', (tags,))
-                all_tags = tags.strip()
-
         execute_query('INSERT OR IGNORE INTO apps (name, category, description, internal_url, external_url, icon, extras)\
-            VALUES (?, ?, ?, ?, ?, ?, ?)',
+                    VALUES (?, ?, ?, ?, ?, ?, ?)',
                       (app_name.strip(), category, description, internal_url, external_url, icon, extras))
 
         myapp = execute_query('SELECT id,name FROM apps where name=?', (app_name,), one=True)
 
-        if myapp['id'] > -1:
-            if len(all_tags) > 0:
-                for tag in all_tags:
-                    t = execute_query('SELECT id, tag FROM tags WHERE tag=?', (tag,), one=True)
-                    execute_query('INSERT INTO app_tags(app_id, tag_id) VALUES(?, ?)', (myapp['id'], t['id']))
+        if len(tags) > 0:
+            if ',' in tags:
+                app_tags = tags.split(',')
+                for tag in app_tags:
+                    execute_query('INSERT OR IGNORE INTO tags (tag) VALUES (?)', (tag.strip(),))
+                    db_tag = execute_query("SELECT id FROM tags WHERE tag=?", (tag,))
+                    execute_query('INSERT INTO app_tags(app_id, tag_id) VALUES(?, ?)', (myapp['id'], db_tag['id']))
+            else:
+                execute_query('INSERT OR IGNORE INTO tags (tag) VALUES (?)', (tags,))
+                tag = execute_query("SELECT id FROM tags WHERE tag=?", (tags.strip(),))[0]
+                execute_query('INSERT INTO app_tags(app_id, tag_id) VALUES(?, ?)', (myapp['id'], tag['id']))
 
         return redirect(url_for('index'))
 
-    return render_template('add.html', form=form, title='App Form', items=all_tags, icons=get_icon_list())
+    return render_template('add.html', form=form, title='App Form', items=app_tags, icons=get_icon_list())
 
 
 if __name__ == '__main__':
