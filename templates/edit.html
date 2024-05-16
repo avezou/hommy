@@ -2,61 +2,20 @@
 {% import 'bootstrap/wtf.html' as wtf %}
 
 {% block content %}
-<form method="POST">
-    {{ form.csrf_token }}
-    <div class="container">
-    <div class="form-row">
-      <div class="form-group col-md-6">
-        <label for="name">App name</label>
-        <input type="text" class="form-control" id="name" placeholder="Name" value="{{ form.name.data }}">
-      </div>
-      <div class="form-group  required col-md-6">
-        {{ wtf.form_field(form.category) }}
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="description">Description</label>
-      <input type="text" class="form-control" id="description" placeholder="Description" value="{{ form.description.data }}">
-    </div>
-    <div class="form-row">
-        <div class="form-group col-md-6">
-            <label for="internal_url">Local URL</label>
-            <input type="text" class="form-control" id="internal_url" placeholder="Local URL" value="{{ form.internal_url.data }}">
-        </div>
-        <div class="form-group col-md-6">
-            <label for="external_url">External URL</label>
-            <input type="text" class="form-control" id="external_url" placeholder="External URL" value="{{ form.external_url.data }}">
-        </div>
-    </div>
-    <div class="form-row">
-        <div class="form-group col-md-6">
-            <label for="icon">Icon</label>
-            <input type="text" class="form-control" id="icon" placeholder="Icon" value="{{ form.icon.data }}" list="icons">
-        </div>
-        <div class="form-group col-md-6">
-            <label for="tags">Tags</label>
-            <input type="text" class="form-control" id="tags" placeholder="Tags" value="{{ form.tags.data }}" list="taglist">
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="extras">Extras</label>
-        <input type="text" class="form-control" id="extras" placeholder="Additional data" value="{{ form.extras.data }}">
-    </div>
-    <div class="form-group">
-        <button type="submit" class="btn btn-primary">Save</button>
-    </div>
+<div class="row">
+  <div class="col-md-12">
+  </div>
+  <div class="container">
+      <div class="row">
+        <div class="col-md-10 col-lg-8 mx-lg-auto mx-md-auto">
     
-    </div>
-</form>
-
-<datalist id="icons">
-    {% for icon in icons %}
-      <option value="{{ icon }}"></option>
-    {% endfor %}
-</datalist>
-<datalist id="taglist">
-    {% for tag in tags %}
-      <option value="{{ tag }}"></option>
-    {% endfor %}
-</datalist>
+          <div class="row">
+              <div class="col-md-6 table">
+              {{ wtf.quick_form(form, horizontal_columns=(inline, 50, 50), form_type="horizontal", button_map={'submit': 'primary'}) }}
+              </div>
+          </div>
+      </div>
+  </div>
+  </div>
+</div>
 {% endblock %}

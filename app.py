@@ -85,20 +85,11 @@ def delete(app_id):
 
 @app.route('/edit/<int:app_id>', methods=['GET', 'POST'])
 def edit(app_id):
+    form = AppForm()
     db_app = execute_query('SELECT * FROM apps WHERE id =?', (app_id,), one=True)
     db_tags = execute_query('SELECT tag FROM tags t JOIN app_tags a ON a.tag_id = t.id WHERE a.app_id =?', (app_id,))
     tags = [tag['tag'] for tag in db_tags]
     # all_tags = execute_query('SELECT tag FROM tags')
-
-    form = AppForm()
-    form.tags.data = ','.join(tags)
-    form.name.data = db_app['name']
-    form.category.data = db_app['category']
-    form.description.data = db_app['description']
-    form.internal_url.data = db_app['internal_url']
-    form.external_url.data = db_app['external_url']
-    form.extras.data = db_app['extras']
-    form.icon.data = db_app['icon']
 
     if form.validate_on_submit():
         # Extract form data
@@ -129,7 +120,16 @@ def edit(app_id):
                 t = execute_query('SELECT id, tag FROM tags WHERE tag=?', (tag,), one=True)
                 execute_query('INSERT INTO app_tags(app_id, tag_id) VALUES(?, ?)', (myapp['id'], t['id']))
 
-        return redirect(url_for('list'))
+        return redirect(url_for('list_apps'))
+
+    form.tags.data = ','.join(tags)
+    form.name.data = db_app['name']
+    form.category.data = db_app['category']
+    form.description.data = db_app['description']
+    form.internal_url.data = db_app['internal_url']
+    form.external_url.data = db_app['external_url']
+    form.extras.data = db_app['extras']
+    form.icon.data = db_app['icon']
 
     return render_template('edit.html', form=form, icons=get_icon_list())
 
@@ -184,3 +184,13 @@ def add():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+ #
+ # <form method=post>
+ #          <dl>
+ #            {{ render_field(form.post_title) }}
+ #            {{ render_field(form.post_genre) }}
+ #            {{ render_field(form.body) }}
+ #          </dl>
+ #          <p><input type=submit value=Post>
+ #        </form>

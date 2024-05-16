@@ -25,7 +25,7 @@
         {{ tag['tag'] }}{{ ", " if not loop.last else "" }}
         {% endfor %} 
       </TD>
-      <TD><a href="{{ url_for('edit', id=app['id']) }}">Edit</a></TD>
+      <TD><a href="{{ url_for('edit', app_id=app['id']) }}">Edit</a></TD>
       <TD><button class="btn btn-sm btn-danger" onclick=confirmDelete("{{ app['id'] }}")>Delete</button></TD>
     </TR>
     {% endfor %}
