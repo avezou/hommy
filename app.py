@@ -177,8 +177,8 @@ def add():
                 app_tags = tags.split(',')
                 for tag in app_tags:
                     execute_query('INSERT OR IGNORE INTO tags (tag) VALUES (?)', (tag.strip(),))
-                    db_tag = execute_query("SELECT id FROM tags WHERE tag=?", (tag,))
-                    execute_query('INSERT INTO app_tags(app_id, tag_id) VALUES(?, ?)', (myapp['id'], db_tag['id']))
+                    db_tag = execute_query("SELECT id FROM tags WHERE tag=?", (tag,), one=True)
+                    execute_query('INSERT OR IGNORE INTO app_tags(app_id, tag_id) VALUES(?, ?)', (myapp['id'], db_tag['id']))
             else:
                 execute_query('INSERT OR IGNORE INTO tags (tag) VALUES (?)', (tags,))
                 tag = execute_query("SELECT id FROM tags WHERE tag=?", (tags.strip(),))[0]

@@ -5,15 +5,12 @@
   <div class="col-md-12">
   </div>
   <div class="container">
-      <div class="row">
-        <div class="col-md-10 col-lg-8 mx-lg-auto mx-md-auto">
-
-          <div class="row">
-              <div class="col-md-6 table">
-              <form method="post" enctype="multipart/form-data">
+        <form method="post"  class="form form-horizontal" enctype="multipart/form-data">
                   {{ form.csrf_token }}
-                  <p><div>{{ form.name.label }} {{ form.name() }}</div></p>
-                  <p>{{ form.category.label }} {{ form.category() }}</p>
+                  <div class="row">
+                    <div class="form-group col-md-6">{{ form.name.label }} {{ form.name() }}</div>
+                    <div class="form-group col-md-6">{{ form.category.label }} {{ form.category() }}</div>
+                  </div>
                   <p>{{ form.description.label }} {{ form.description() }}</p>
                   <p>{{ form.internal_url.label }} {{ form.internal_url() }}</p>
                   <p>{{ form.external_url.label }} {{ form.external_url() }}</p>
@@ -22,9 +19,6 @@
                   <p>{{ form.extras.label }} {{ form.extras() }}</p>
                   <p><input type="submit" value="Save"></p>
               </form>
-              </div>
-          </div>
-      </div>
   </div>
   </div>
 </div>
