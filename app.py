@@ -104,7 +104,8 @@ def edit(app_id):
         # Process tags from the form
         tags = form.tags.data.split(',')
 
-        execute_query('DELETE FROM tags WHERE EXISTS (SELECT * from app_tags WHERE tags.id = app_tags.tag_id AND app_tags.app_id=?)', (app_id,))
+        execute_query('DELETE FROM tags WHERE EXISTS (SELECT * FROM app_tags WHERE tags.id = app_tags.tag_id AND app_tags.app_id=?)', (app_id,))
+        execute_query('DELETE FROM tags WHERE tags.id NOT IN (SELECT tag_id FROM app_tags)')
 
         for tag in tags:
             execute_query('INSERT OR IGNORE INTO tags (tag) VALUES (?)', (tag.strip(),))
