@@ -88,20 +88,7 @@ def delete(app_id):
 def manage_app(app_id=None):
     form = AppForm()
     is_add = app_id is None
-    if app_id:
-        db_app = execute_query('SELECT * FROM apps WHERE id =?', (app_id,), one=True)
-        db_tags = execute_query('SELECT tag FROM tags t JOIN app_tags a ON a.tag_id = t.id WHERE a.app_id =?', (app_id,))
-        tag_list = [tag['tag'] for tag in db_tags]
-        form.tags.data = ','.join(tag_list)
-        form.name.data = db_app['name']
-        form.category.data = db_app['category']
-        form.description.data = db_app['description']
-        form.internal_url.data = db_app['internal_url']
-        form.external_url.data = db_app['external_url']
-        form.extras.data = db_app['extras']
-        form.icon.data = db_app['icon']
-    else:
-        tag_list = []
+
 
     all_tags = execute_query('SELECT tag FROM tags')
     ttag = [t['tag'] for t in all_tags]
@@ -134,6 +121,18 @@ def manage_app(app_id=None):
             execute_query('INSERT INTO app_tags (app_id, tag_id) VALUES (?, ?)', (app_id, tag_id))
 
         return redirect(url_for('index') if is_add else url_for('list_apps'))
+    if app_id:
+        db_app = execute_query('SELECT * FROM apps WHERE id =?', (app_id,), one=True)
+        db_tags = execute_query('SELECT tag FROM tags t JOIN app_tags a ON a.tag_id = t.id WHERE a.app_id =?', (app_id,))
+        tag_list = [tag['tag'] for tag in db_tags]
+        form.tags.data = ','.join(tag_list)
+        form.name.data = db_app['name']
+        form.category.data = db_app['category']
+        form.description.data = db_app['description']
+        form.internal_url.data = db_app['internal_url']
+        form.external_url.data = db_app['external_url']
+        form.extras.data = db_app['extras']
+        form.icon.data = db_app['icon']
 
     return render_template('edit.html', form=form, icons=get_icon_list(), tags=ttag)
 
