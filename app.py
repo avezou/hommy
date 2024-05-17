@@ -88,7 +88,7 @@ def edit(app_id):
     form = AppForm()
     db_app = execute_query('SELECT * FROM apps WHERE id =?', (app_id,), one=True)
     db_tags = execute_query('SELECT tag FROM tags t JOIN app_tags a ON a.tag_id = t.id WHERE a.app_id =?', (app_id,))
-    tags = [tag['tag'] for tag in db_tags]
+    tag_list = [tag['tag'] for tag in db_tags]
     # all_tags = execute_query('SELECT tag FROM tags')
 
     if form.validate_on_submit():
@@ -104,8 +104,7 @@ def edit(app_id):
         # Process tags from the form
         tags = form.tags.data.split(',')
 
-        # execute_query('DELETE FROM tags t JOIN app_tags at ON t.id = at.tag_id WHERE app_id=?', (app_id,))
-        # execute_query('DELETE FROM app_tags WHERE app_id=?', (app_id,))
+        execute_query('DELETE FROM tags WHERE EXISTS (SELECT * from app_tags WHERE tags.id = app_tags.tag_id AND app_tags.app_id=?)', (app_id,))
 
         for tag in tags:
             execute_query('INSERT OR IGNORE INTO tags (tag) VALUES (?)', (tag.strip(),))
@@ -125,7 +124,7 @@ def edit(app_id):
 
         return redirect(url_for('list_apps'))
 
-    form.tags.data = ','.join(tags)
+    form.tags.data = ','.join(tag_list)
     form.name.data = db_app['name']
     form.category.data = db_app['category']
     form.description.data = db_app['description']
