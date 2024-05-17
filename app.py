@@ -89,7 +89,10 @@ def edit(app_id):
     db_app = execute_query('SELECT * FROM apps WHERE id =?', (app_id,), one=True)
     db_tags = execute_query('SELECT tag FROM tags t JOIN app_tags a ON a.tag_id = t.id WHERE a.app_id =?', (app_id,))
     tag_list = [tag['tag'] for tag in db_tags]
-    # all_tags = execute_query('SELECT tag FROM tags')
+    all_tags = execute_query('SELECT tag FROM tags')
+    ttag = []
+    for t in all_tags:
+        ttag.append(t['tag'])
 
     if form.validate_on_submit():
         # Extract form data
@@ -135,7 +138,7 @@ def edit(app_id):
     form.extras.data = db_app['extras']
     form.icon.data = db_app['icon']
 
-    return render_template('edit.html', form=form, icons=get_icon_list())
+    return render_template('edit.html', form=form, icons=get_icon_list(), tags=ttag)
 
 
 def get_icon_list():
