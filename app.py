@@ -83,19 +83,30 @@ def delete(app_id):
     return redirect(url_for('list'))
 
 
-@app.route('/edit/<int:app_id>', methods=['GET', 'POST'])
-def edit(app_id):
+@app.route('/app', methods=['GET', 'POST'])
+@app.route('/app/<int:app_id>', methods=['GET', 'POST'])
+def manage_app(app_id=None):
     form = AppForm()
-    db_app = execute_query('SELECT * FROM apps WHERE id =?', (app_id,), one=True)
-    db_tags = execute_query('SELECT tag FROM tags t JOIN app_tags a ON a.tag_id = t.id WHERE a.app_id =?', (app_id,))
-    tag_list = [tag['tag'] for tag in db_tags]
+    is_add = app_id is None
+    if app_id:
+        db_app = execute_query('SELECT * FROM apps WHERE id =?', (app_id,), one=True)
+        db_tags = execute_query('SELECT tag FROM tags t JOIN app_tags a ON a.tag_id = t.id WHERE a.app_id =?', (app_id,))
+        tag_list = [tag['tag'] for tag in db_tags]
+        form.tags.data = ','.join(tag_list)
+        form.name.data = db_app['name']
+        form.category.data = db_app['category']
+        form.description.data = db_app['description']
+        form.internal_url.data = db_app['internal_url']
+        form.external_url.data = db_app['external_url']
+        form.extras.data = db_app['extras']
+        form.icon.data = db_app['icon']
+    else:
+        tag_list = []
+
     all_tags = execute_query('SELECT tag FROM tags')
-    ttag = []
-    for t in all_tags:
-        ttag.append(t['tag'])
+    ttag = [t['tag'] for t in all_tags]
 
     if form.validate_on_submit():
-        # Extract form data
         app_name = form.name.data
         category = form.category.data
         description = form.description.data
@@ -103,40 +114,26 @@ def edit(app_id):
         external_url = form.external_url.data
         extras = form.extras.data
         icon = form.icon.data
-
-        # Process tags from the form
         tags = form.tags.data.split(',')
 
-        # Delete all entries associated with this app if from the app_tags association table
-        execute_query('DELETE FROM app_tags WHERE app_tags.app_id=?', (app_id,))
+        if app_id:
+            # Update existing app
+            execute_query(
+                'UPDATE apps SET name=?, category=?, description=?, internal_url=?, external_url=?, icon=?, extras=? WHERE id=?',
+                (app_name, category, description, internal_url, external_url, icon, extras, app_id))
+            execute_query('DELETE FROM app_tags WHERE app_id=?', (app_id,))
+        else:
+            # Add new app
+            execute_query('INSERT INTO apps (name, category, description, internal_url, external_url, icon, extras) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                          (app_name, category, description, internal_url, external_url, icon, extras))
+            app_id = execute_query('SELECT id FROM apps WHERE name=?', (app_name,), one=True)['id']
 
-        # Delete tags that have no associations
-        execute_query('DELETE FROM tags WHERE tags.id NOT IN (SELECT tag_id FROM app_tags)')
-
-        # Insert tags based on the values from the form
         for tag in tags:
             execute_query('INSERT OR IGNORE INTO tags (tag) VALUES (?)', (tag.strip(),))
+            tag_id = execute_query('SELECT id FROM tags WHERE tag=?', (tag.strip(),), one=True)['id']
+            execute_query('INSERT INTO app_tags (app_id, tag_id) VALUES (?, ?)', (app_id, tag_id))
 
-        # Update app data in the database
-        execute_query(
-            'UPDATE apps SET name=?, category=?, description=?, internal_url=?, external_url=?, icon=?, '
-            'extras=? WHERE id=?',
-            (app_name, category, description, internal_url, external_url, icon, extras, app_id))
-
-        for tag in tags:
-            t = execute_query('SELECT id, tag FROM tags WHERE tag=?', (tag,), one=True)
-            execute_query('INSERT INTO app_tags(app_id, tag_id) VALUES(?, ?)', (app_id, t['id']))
-
-        return redirect(url_for('list_apps'))
-
-    form.tags.data = ','.join(tag_list)
-    form.name.data = db_app['name']
-    form.category.data = db_app['category']
-    form.description.data = db_app['description']
-    form.internal_url.data = db_app['internal_url']
-    form.external_url.data = db_app['external_url']
-    form.extras.data = db_app['extras']
-    form.icon.data = db_app['icon']
+        return redirect(url_for('index') if is_add else url_for('list_apps'))
 
     return render_template('edit.html', form=form, icons=get_icon_list(), tags=ttag)
 
@@ -150,43 +147,6 @@ def get_icon_list():
             icons.append(ico)
     return icons
 
-
-@app.route('/add', methods=['GET', 'POST'])
-def add():
-    form = AppForm()
-    app_tags = []
-    if form.validate_on_submit():
-
-        app_name = form.name.data
-        category = form.category.data
-        description = form.description.data
-        internal_url = form.internal_url.data
-        external_url = form.external_url.data
-        tags = form.tags.data
-        extras = form.extras.data
-        icon = form.icon.data
-
-        execute_query('INSERT OR IGNORE INTO apps (name, category, description, internal_url, external_url, icon, extras)\
-                    VALUES (?, ?, ?, ?, ?, ?, ?)',
-                      (app_name.strip(), category, description, internal_url, external_url, icon, extras))
-
-        myapp = execute_query('SELECT id,name FROM apps where name=?', (app_name,), one=True)
-
-        if len(tags) > 0:
-            if ',' in tags:
-                app_tags = tags.split(',')
-                for tag in app_tags:
-                    execute_query('INSERT OR IGNORE INTO tags (tag) VALUES (?)', (tag.strip(),))
-                    db_tag = execute_query("SELECT id FROM tags WHERE tag=?", (tag,), one=True)
-                    execute_query('INSERT OR IGNORE INTO app_tags(app_id, tag_id) VALUES(?, ?)', (myapp['id'], db_tag['id']))
-            else:
-                execute_query('INSERT OR IGNORE INTO tags (tag) VALUES (?)', (tags,))
-                tag = execute_query("SELECT id FROM tags WHERE tag=?", (tags.strip(),))[0]
-                execute_query('INSERT INTO app_tags(app_id, tag_id) VALUES(?, ?)', (myapp['id'], tag['id']))
-
-        return redirect(url_for('index'))
-
-    return render_template('add.html', form=form, title='App Form', items=app_tags, icons=get_icon_list())
 
 
 if __name__ == '__main__':
