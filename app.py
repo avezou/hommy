@@ -104,9 +104,13 @@ def edit(app_id):
         # Process tags from the form
         tags = form.tags.data.split(',')
 
-        execute_query('DELETE FROM tags WHERE EXISTS (SELECT * FROM app_tags WHERE tags.id = app_tags.tag_id AND app_tags.app_id=?)', (app_id,))
+        # Delete all entries associated with this app if from the app_tags association table
+        execute_query('DELETE FROM app_tags WHERE app_tags.app_id=?', (app_id,))
+
+        # Delete tags that have no associations
         execute_query('DELETE FROM tags WHERE tags.id NOT IN (SELECT tag_id FROM app_tags)')
 
+        # Insert tags based on the values from the form
         for tag in tags:
             execute_query('INSERT OR IGNORE INTO tags (tag) VALUES (?)', (tag.strip(),))
 
@@ -116,12 +120,9 @@ def edit(app_id):
             'extras=? WHERE id=?',
             (app_name, category, description, internal_url, external_url, icon, extras, app_id))
 
-        myapp = execute_query('SELECT id,name FROM apps where name=?', (app_name,), one=True)        
-
-        if myapp['id'] > -1:
-            for tag in tags:
-                t = execute_query('SELECT id, tag FROM tags WHERE tag=?', (tag,), one=True)
-                execute_query('INSERT INTO app_tags(app_id, tag_id) VALUES(?, ?)', (myapp['id'], t['id']))
+        for tag in tags:
+            t = execute_query('SELECT id, tag FROM tags WHERE tag=?', (tag,), one=True)
+            execute_query('INSERT INTO app_tags(app_id, tag_id) VALUES(?, ?)', (app_id, t['id']))
 
         return redirect(url_for('list_apps'))
 
@@ -187,13 +188,3 @@ def add():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
- #
- # <form method=post>
- #          <dl>
- #            {{ render_field(form.post_title) }}
- #            {{ render_field(form.post_genre) }}
- #            {{ render_field(form.body) }}
- #          </dl>
- #          <p><input type=submit value=Post>
- #        </form>
