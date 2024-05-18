@@ -22,11 +22,11 @@ def get_categories():
 class AppForm(FlaskForm):
     name = StringField('AppName', validators=[DataRequired(), Length(min=3, max=15)])
     category = SelectField('Category', validators=[DataRequired(), ], choices=get_categories())
-    description = StringField('Description', validators=[DataRequired(), ])
+    description = TextAreaField('Description', validators=[DataRequired(), ])
     internal_url = URLField('Internal Url', validators=[DataRequired(), URL()])
     external_url = URLField('External Url', validators=[DataRequired(), URL()])
     icon = StringField('Icon', validators=[DataRequired(), ])
-    tags = StringField('Tags (Separate multiple tags with a comma).',
+    tags = StringField('Tags',
                        validators=[Regexp(r'[^,\s][^\,]*[^,\s]*', message='Tags must contain letters only separated '
                                                                           'by commas.'),
                                    Length(min=3, max=35)])
