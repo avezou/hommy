@@ -34,10 +34,12 @@
           <h4 class="card-content">
             <span><img src="{{ url_for('static', filename='images/svg/' + app['icon'] + '.svg') }}" alt="Logo" width="30" height="30"></span>
             {{ app['name'] }}
-            <span id="{{ app['name'] }}" class="dot gradient-red" data-url="{{ app['internal_url'] }}"></span>
           </h4>
         </a>
-        <h5><span class="badge" id="{{ app['category'] }}">{{ app['category'] }}</span></h5>
+        <h5>
+          <span class="badge" id="{{ app['category'] }}">{{ app['category'] }}</span>
+          <span id="{{ app['name'] }}" class="dot gradient-red" data-url="{{ app['internal_url'] }}" style="float: right;"></span>
+        </h5>
           {% for tag in tags %}
               <span class="badge badge-light">{{ tag['tag'] }}</span>
           {% endfor %}
