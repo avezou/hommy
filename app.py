@@ -75,12 +75,12 @@ def list_apps():
     return render_template('list.html', apps=res[0])
 
 
-@app.route('/delete/<int:id>')
+@app.route('/delete/<int:app_id>')
 def delete(app_id):
     execute_query('DELETE FROM apps WHERE id =?', (app_id,))
     execute_query('DELETE FROM app_tags WHERE app_id =?', (app_id,))
     # orphaned_tags = execute_query('DELETE from tags WHERE id NOT IN (SELECT tag_id FROM app_tags) RETURNING id')
-    return redirect(url_for('list'))
+    return redirect(url_for('list_apps'))
 
 
 @app.route('/app', methods=['GET', 'POST'])

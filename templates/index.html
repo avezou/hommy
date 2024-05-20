@@ -1,36 +1,36 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<section class="main" style="margin-bottom: 30px;">
-    <div class="wrapper">
-      <span>Tag:</span>
-      <select id='myTags'>
+<section class="row" style="margin-bottom: 30px;">
+    <div class="row">
+      <label for="myTags" class="col-sm-1 col-form-label">Tags</label>
+      <select id='myTags' class="col-sm-2 col-md-2">
         <option value="">Filter by Tag</option>
         {% for tag in tags %}
           <option value="{{ tag['tag'] }}">{{ tag['tag'] }}</option>
         {% endfor %}
       </select>
-    
-      <span>Category:</span>
-      <select id='myCategories'>
+
+      <label for="myCategories" class="col-sm-1 col-form-label">Categories</label>
+      <select id='myCategories' class="col-sm-3 col-md-3">
         <option value="">Filter by Category</option>
         {% for cat in categories %}
           <option class="{{ cat['cat'] }}" value="{{ cat['cat'] }}">{{ cat['cat'] }}</option>
           <h3>{{ cat['cat'] }}</h3>
         {% endfor %}
       </select>
-      <span>Search:</span>
-      <input type="text" id="mySearch" placeholder="Search">
+      <label for="mySearch" class="col-sm-1 col-form-label">Search</label>
+      <input type="text" id="mySearch" placeholder="Search" class="col-sm-3 col-md-3">
     </div>
 </section>
 {% if apps|length > 0%}
 <div class="row">
   {% for app, tags in apps.items() %}
-  
+
   <div id="myList">
       <div class="card-content p-2">
         <a href="{{ app['internal_url'] }}" class="card-text" target="_blank">
-          
+
           <h4 class="card-content">
             <span><img src="{{ url_for('static', filename='images/svg/' + app['icon'] + '.svg') }}" alt="Logo" width="30" height="30"></span>
             {{ app['name'] }}
