@@ -28,7 +28,7 @@
   {% for app, tags in apps.items() %}
 
   <div id="myList">
-      <div class="card-content p-2">
+      <div class="card-content p-2 bg-dark">
         <a href="{{ app['internal_url'] }}" class="card-text" target="_blank">
 
           <h4 class="card-content">
@@ -39,7 +39,7 @@
         </a>
         <h5><span class="badge" id="{{ app['category'] }}">{{ app['category'] }}</span></h5>
           {% for tag in tags %}
-              <span class="badge badge-dark">{{ tag['tag'] }}</span>
+              <span class="badge badge-light">{{ tag['tag'] }}</span>
           {% endfor %}
       </div>
   </div>

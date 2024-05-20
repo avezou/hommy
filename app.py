@@ -89,7 +89,6 @@ def manage_app(app_id=None):
     form = AppForm()
     is_add = app_id is None
 
-
     all_tags = execute_query('SELECT tag FROM tags')
     ttag = [t['tag'] for t in all_tags]
 
@@ -106,13 +105,16 @@ def manage_app(app_id=None):
         if app_id:
             # Update existing app
             execute_query(
-                'UPDATE apps SET name=?, category=?, description=?, internal_url=?, external_url=?, icon=?, extras=? WHERE id=?',
+                'UPDATE apps SET name=?, category=?, description=?, internal_url=?, external_url=?, icon=?, '
+                'extras=? WHERE id=?',
                 (app_name, category, description, internal_url, external_url, icon, extras, app_id))
             execute_query('DELETE FROM app_tags WHERE app_id=?', (app_id,))
         else:
             # Add new app
-            execute_query('INSERT INTO apps (name, category, description, internal_url, external_url, icon, extras) VALUES (?, ?, ?, ?, ?, ?, ?)',
-                          (app_name, category, description, internal_url, external_url, icon, extras))
+            execute_query(
+                'INSERT INTO apps (name, category, description, internal_url, external_url, icon, extras) VALUES (?, '
+                '?, ?, ?, ?, ?, ?)',
+                (app_name, category, description, internal_url, external_url, icon, extras))
             app_id = execute_query('SELECT id FROM apps WHERE name=?', (app_name,), one=True)['id']
 
         for tag in tags:
@@ -123,7 +125,8 @@ def manage_app(app_id=None):
         return redirect(url_for('index') if is_add else url_for('list_apps'))
     if app_id:
         db_app = execute_query('SELECT * FROM apps WHERE id =?', (app_id,), one=True)
-        db_tags = execute_query('SELECT tag FROM tags t JOIN app_tags a ON a.tag_id = t.id WHERE a.app_id =?', (app_id,))
+        db_tags = execute_query('SELECT tag FROM tags t JOIN app_tags a ON a.tag_id = t.id WHERE a.app_id =?',
+                                (app_id,))
         tag_list = [tag['tag'] for tag in db_tags]
         form.tags.data = ','.join(tag_list)
         form.name.data = db_app['name']
@@ -145,7 +148,6 @@ def get_icon_list():
             ico = item.name.split('.')[0]
             icons.append(ico)
     return icons
-
 
 
 if __name__ == '__main__':
