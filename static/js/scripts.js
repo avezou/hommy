@@ -38,15 +38,13 @@ function refreshCards() {
         var spn = $(this);
         var spnId = spn.attr("id");
         var spnUrl = spn.attr("data-url");
-        console.log("spnUrl: " + spnUrl);
-        
+
         $.ajax({spnUrl,
             type: "HEAD",
             timeout: 3000, 
             statusCode: {
                 200: function() {
-                    console.log("working : " + 200);
-                    spn.addClass("gradient-green").removeClass('gradient-red');        
+                    spn.addClass("gradient-green").removeClass('gradient-red');
                 },
                 404: function() {
                     spn.addClass("gradient-red").removeClass('gradient-green');        
@@ -68,9 +66,8 @@ function hashCode (str){
     if (str.length == 0) return hash;
     for (i = 0; i < str.length; i++) {
         char = str.charCodeAt(i);
-        hash = char % 360;
-        console.log("modulo: " + hash)
-        hash = hash + hash; // Convert to 32bit integer
+        hash2 = char * 200;
+        hash = hash + hash2; // Convert to 32bit integer
     }
     return hash % 360;
 };
@@ -83,9 +80,7 @@ $(document).ready(function() {
         if (spnId === undefined) {
             return;
         }
-        console.log("spnId: " + spnId);
-        var color = "hsl(" + ((colo + 360) * 360 / 360) + ", 100%, 75%)";
-        console.log("color: " + color);
+        var color = "hsl(" + hashCode(spnId) + ", 100%, 75%)";
         spn.css("background-color", color);
         colo = colo + 20;
     });
