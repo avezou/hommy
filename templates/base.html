@@ -26,11 +26,10 @@
               <li class="nav-item">
                   <a class="nav-link" href="{{ url_for('list_apps')}}">Manage</a>
               </li>
-              <li class="nav-item">
-                {% block navextra %}{% endblock %}
-              </li>
             </ul>
+             {% block navextra %}{% endblock %}
         </div>
+
     </nav>
     <div class="container-fluid">
         {% block content %} {% endblock %}

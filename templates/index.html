@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 
 {% block navextra %}
-<section class="row">
+<section class="d-flex">
     <div class="row">
       <label for="myTags" class="col-sm-1 col-form-label">Tags</label>
-      <select id='myTags' class="col-sm-2 col-md-2">
+      <select id='myTags' class="col-sm-1 col-md-2">
         <option value="">Filter by Tag</option>
         {% for tag in tags %}
           <option value="{{ tag['tag'] }}">{{ tag['tag'] }}</option>
@@ -12,7 +12,7 @@
       </select>
 
       <label for="myCategories" class="col-sm-1 col-form-label">Categories</label>
-      <select id='myCategories' class="col-sm-3 col-md-3">
+      <select id='myCategories' class="col-sm-1 col-md-2">
         <option value="">Filter by Category</option>
         {% for cat in categories %}
           <option class="{{ cat['cat'] }}" value="{{ cat['cat'] }}">{{ cat['cat'] }}</option>
@@ -20,7 +20,7 @@
         {% endfor %}
       </select>
       <label for="mySearch" class="col-sm-1 col-form-label">Search</label>
-      <input type="text" id="mySearch" placeholder="Search" class="col-sm-3 col-md-3">
+      <input type="text" id="mySearch" placeholder="Search" class="col-sm-1 col-md-3">
     </div>
 </section>
 {% endblock %}
