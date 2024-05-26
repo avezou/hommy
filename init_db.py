@@ -19,7 +19,7 @@ cur.execute("INSERT INTO categories (cat) VALUES (?)", ('Docker',))
 cur.execute("INSERT INTO categories (cat) VALUES (?)", ('System',))
 cur.execute("INSERT INTO categories (cat) VALUES (?)", ('Networking',))
 
-cur.execute("INSERT INTO apps (name, category, internal_url, icon) VALUES (?, ?, ?, ?)", ('Sample', 'General','https://example.com', 'https://example.com/icon.png'))
+cur.execute("INSERT INTO apps (name, category, internal_url, icon) VALUES (?, ?, ?, ?)", ('Sample', 'General','https://example.com', 'duckduckgo'))
 
 cur.execute("INSERT INTO tags (tag) VALUES (?)", ('Utils',))
 
