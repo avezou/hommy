@@ -79,7 +79,7 @@ def list_apps():
 def delete(app_id):
     execute_query('DELETE FROM apps WHERE id =?', (app_id,))
     execute_query('DELETE FROM app_tags WHERE app_id =?', (app_id,))
-    # orphaned_tags = execute_query('DELETE from tags WHERE id NOT IN (SELECT tag_id FROM app_tags) RETURNING id')
+    execute_query('DELETE from tags WHERE id NOT IN (SELECT tag_id FROM app_tags)')
     return redirect(url_for('list_apps'))
 
 
@@ -136,6 +136,9 @@ def manage_app(app_id=None):
         form.external_url.data = db_app['external_url']
         form.extras.data = db_app['extras']
         form.icon.data = db_app['icon']
+
+    # Delete orphan tags
+    execute_query('DELETE FROM tags WHERE id NOT IN (SELECT tag_id FROM app_tags)')
 
     return render_template('edit.html', form=form, icons=get_icon_list(), tags=ttag)
 
