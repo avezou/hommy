@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<table class="table table-striped table-bordered table-condensed">
+    <TR>
+       <TH>Name</TH>
+       <TH>Category</TH>
+       <TH>Description</TH>
+       <TH>Icon</TH>
+       <TH>Local URL</TH>
+       <TH>URL</TH>
+       <TH>Tags</TH>
+       <TH>Edit</TH>
+       <TH>Delete</TH>
+    </TR>
+    {% for app, tags in apps.items() %}
+    <TR>
+      <TD>{{ app['name'] }}</TD>
+      <TD>{{ app['category'] }}</TD>
+      <TD>{{ app['description'] }}</TD>
+      <TD>{{ app['icon'] }}</TD>
+      <TD>{{ app['internal_url'] }}</TD>
+      <TD>{{ app['external_url'] }}</TD>
+      <TD>{% for tag in tags %}
+        {{ tag['tag'] }}{{ ", " if not loop.last else "" }}
+        {% endfor %} 
+      </TD>
+      <TD><a href="{{ url_for('manage_app', app_id=app['id']) }}">Edit</a></TD>
+      <TD><button class="btn btn-sm btn-danger" onclick=confirmDelete("{{ app['id'] }}")>Delete</button></TD>
+    </TR>
+    {% endfor %}
+    </table>
+{% endblock %}  
+
+
+  

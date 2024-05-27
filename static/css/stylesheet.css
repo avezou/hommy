@@ -1,0 +1,115 @@
+body {
+    font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-image: url("../images/StockSnap_DMKQMFIGII.jpg");
+    background-repeat: no-repeat, repeat;
+    /* opacity: 0.5; */
+}
+
+h3 {
+    font-weight: 300;
+    font-size: 1.20rem;
+    line-height: 0.8;
+    margin-bottom: 0.5em;
+    margin-top: 0;
+    display: block;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    unicode-bidi: isolate;
+}
+
+.card {
+    /* background-color: rgba(#bb, #bb, #bb, 0.2); */
+    /* background-color: rgba(161, 155, 235, 0.5); */
+    word-wrap: break-word;
+    background-color: #cfcbcb;
+    border-radius: 10px;
+    border: none;
+    position: relative;
+    margin-bottom: 10px;
+    box-shadow: 0 0.46875rem 2.1875rem rgba(90,97,105,0.1), 0 0.9375rem 1.40625rem rgba(90,97,105,0.1), 0 0.25rem 0.53125rem rgba(90,97,105,0.12), 0 0.125rem 0.1875rem rgba(90,97,105,0.1);
+
+}
+
+/* animation for alive status */
+.alive-pulse {
+    animation: 3s infinite bgcolorchange;
+}
+@keyframes bgcolorchange {
+0% {
+    color: rgb(122, 237, 120);
+}
+50% {
+    background: rgb(133, 237, 120);
+}
+100% {
+    background: rgb(83, 195, 49);
+}
+}
+@-webkit-keyframes bgcolorchange {
+    0%   {background: rgb(122, 237, 120);}
+    75%  {background: rgb(133, 237, 120);}
+    100% {background: rgb(83, 195, 49);}
+}
+/* end animation */
+.row {
+    /* display: grid; */
+    grid-template-columns: repeat(12, 1fr); /* Create 12 equal-width columns */
+    gap: 10px; /* Gap between grid items */
+    width: 90%;
+    padding-left: 2em;
+}
+.main {
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+}
+
+.card-content {
+    background-color: #f0f0f0;
+    padding: 2px;
+    border-radius: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.dot {
+    height: 25px;
+    width: 25px;
+    background-color: #bbb;
+    display: flex;
+    justify-content: flex-end;
+    white-space: nowrap;
+    -webkit-box-pack: center;
+    -webkit-box-align: center;
+    border-radius: 50%;
+    display: inline-block;
+    width: 1.2rem;
+    height: 1.2rem;
+    border-radius: 20.5rem;
+}
+.gradient-green {
+    background-image: linear-gradient(to bottom, #7cdd55, #2EB62C);
+    border-radius: 10px;
+}
+.gradient-red {
+    background-image: linear-gradient(to bottom, #f52424, #590b04);
+    border-radius: 10px;
+}
+
+table {
+    table-layout: responsive-sm;
+}
+
+th {
+    background-color: #68645c;
+    color: white;
+}
+
+td {
+    white-space: normal !important;
+    word-wrap: break-word;
+}
+#mySearch {
+    width: 60em;
+}

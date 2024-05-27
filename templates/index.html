@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block navextra %}
+<section class="d-flex">
+    <div class="row">
+      <label for="myTags" class="col-sm-1 col-form-label">Tags</label>
+      <select id='myTags' class="col-sm-1 col-md-2">
+        <option value="">Filter by Tag</option>
+        {% for tag in tags %}
+          <option value="{{ tag['tag'] }}">{{ tag['tag'] }}</option>
+        {% endfor %}
+      </select>
+
+      <label for="myCategories" class="col-sm-1 col-form-label">Categories</label>
+      <select id='myCategories' class="col-sm-1 col-md-2">
+        <option value="">Filter by Category</option>
+        {% for cat in categories %}
+          <option class="{{ cat['cat'] }}" value="{{ cat['cat'] }}">{{ cat['cat'] }}</option>
+          <h3>{{ cat['cat'] }}</h3>
+        {% endfor %}
+      </select>
+      <label for="mySearch" class="col-sm-1 col-form-label">Search</label>
+      <input type="text" id="mySearch" placeholder="Search" class="col-sm-1 col-md-3">
+    </div>
+</section>
+{% endblock %}
+
+{% block content %}
+{% if apps|length > 0%}
+<div class="row" style="margin-top: 20px;">
+  {% for app, tags in apps.items() %}
+
+  <div id="myList">
+      <div class="card-content p-2 bg-dark">
+        <a href="{{ app['internal_url'] }}" class="card-text" target="_blank">
+
+          <h4 class="card-content">
+            <span><img src="{{ url_for('static', filename='images/svg/' + app['icon'] + '.svg') }}" alt="Logo" width="30" height="30"></span>
+            {{ app['name'] }}
+          </h4>
+        </a>
+        <h5>
+          <span class="badge" id="{{ app['category'] }}">{{ app['category'] }}</span>
+          <span id="{{ app['name'] }}" class="dot gradient-red" data-url="{{ app['internal_url'] }}" style="float: right;"></span>
+        </h5>
+          {% for tag in tags %}
+              <span class="badge badge-light">{{ tag['tag'] }}</span>
+          {% endfor %}
+      </div>
+  </div>
+  {% endfor %}
+</div>
+<div>
+  <ul>
+    {% for i in icons %}
+      <li>{{ i }}</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+{% endblock %}

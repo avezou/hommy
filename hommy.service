@@ -1,0 +1,12 @@
+[Unit]
+Description=Hommy homelab dashboard
+After=network.target
+
+[Service]
+WorkingDirectory=/path_to_hommy_root_dir
+Environment=FLASK_CONFIG=production
+ExecStart=/path_to_hommy_dir/env/bin/gunicorn -w $(nproc) --threads 2 --max-requests 2 app:app
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
