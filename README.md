@@ -8,6 +8,9 @@ While there are many capable dashboards available, such as those listed on the [
 
 This dashboard is designed to run on LXC containers or a local machine, as I prefer LXCs over Docker containers.
 
+## Example
+![](https://github.com/avezou/hommy/example.gif)
+
 ## Installation
 To install Hommy, follow these steps:
 
@@ -82,6 +85,7 @@ Feel free to fork this repository, build on top of it, or create pull requests.
 
 ## Credits
 Background Photo by Abdullah Ghatasheh: [Pexels](https://www.pexels.com/photo/calm-body-of-water-during-golden-hour-1631677/)
+
 SVG icons copied from: https://github.com/simple-icons/simple-icons
 
 ## License
