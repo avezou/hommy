@@ -9,7 +9,7 @@ While there are many capable dashboards available, such as those listed on the [
 This dashboard is designed to run on LXC containers or a local machine, as I prefer LXCs over Docker containers.
 
 ## Example
-![](https://github.com/avezou/hommy/example.gif)
+![](https://github.com/avezou/hommy/blob/main/example.gif)
 
 ## Installation
 To install Hommy, follow these steps:
