@@ -82,6 +82,7 @@ Feel free to fork this repository, build on top of it, or create pull requests.
 
 ## Credits
 Background Photo by Abdullah Ghatasheh: [Pexels](https://www.pexels.com/photo/calm-body-of-water-during-golden-hour-1631677/)
+SVG icons copied from: https://github.com/simple-icons/simple-icons
 
 ## License
 Hommy is licensed under the MIT License. See the [LICENSE](./LICENSE) file for more details.
