@@ -14,6 +14,9 @@ This dashboard is designed to run on LXC containers or a local machine, as I pre
 ## Installation
 To install Hommy, follow these steps:
 
+### Prerequisite
+Make sure python, python-venv, python-pip, and git are installed.
+
 1. Clone this repository or download the archive from GitHub:
    ```bash
    git clone https://github.com/avezou/hommy.git
