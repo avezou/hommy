@@ -16,7 +16,7 @@
         <option value="">Filter by Category</option>
         {% for cat in categories %}
           <option class="{{ cat['cat'] }}" value="{{ cat['cat'] }}">{{ cat['cat'] }}</option>
-          <h3>{{ cat['cat'] }}</h3>
+          {{ cat['cat'] }}
         {% endfor %}
       </select>
       <label for="mySearch" class="col-sm-1 col-form-label">Search</label>

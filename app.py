@@ -3,6 +3,7 @@ import sqlite3
 
 from flask import Flask, render_template, redirect, url_for
 from flask_bootstrap import Bootstrap
+from socket import SocketIO
 
 from config import Config
 from forms import AppForm
@@ -154,4 +155,5 @@ def get_icon_list():
 
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    port = 8000
+    app.run(host='0.0.0.0')
