@@ -1,3 +1,7 @@
+Archiving this repo. The initial motivation for this was that I wanted a simple dashboard that's easy to add hosts to monitor. 
+I was planning on extending it, but found that Homarr, does everything I want and is still has a pretty lean dashboard.
+I will use my time to contribute to homarr if need be. 
+
 # Hommy
 A minimalist dashboard for your homelab.
 
